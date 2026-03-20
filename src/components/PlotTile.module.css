@@ -17,16 +17,24 @@
     filter: brightness(1.08);
 }
 
-/* States */
+/* Phase-based tile states */
 
-.occupied {
+/* fertilizing / fertilized */
+.fertile {
+    background-color: #8b6530;
+    border-color: #5c3d18;
+}
+
+/* needs_water / watering / growing */
+.planted {
     background-color: #78b86a;
     border-color: #3e7a30;
 }
 
-.wilted {
-    background-color: #9e9070;
-    border-color: #5c5040;
+/* ready / harvesting */
+.readyPhase {
+    background-color: #e8c840;
+    border-color: #a88c10;
 }
 
 /* Labels */
@@ -255,4 +263,14 @@
 
 .cropCancel:hover {
     filter: brightness(1.15);
+}
+
+/* Phase hint text */
+.hint {
+    font-size: 0.6rem;
+    color: rgba(30, 20, 5, 0.65);
+    text-align: center;
+    line-height: 1.2;
+    max-width: 100%;
+    word-break: break-word;
 }

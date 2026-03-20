@@ -1,16 +1,21 @@
 // Central catalog of all Chomb types.
 // catalogKey is the stable unique identifier used in state and the shop.
 // Starters (cost: 0) are pre-unlocked in initialState; the shop hides them.
+//
+// role: "fertilizer" | "waterer" | "harvester"
+//   fertilizer — prepares empty plots (4 s)
+//   waterer    — waters planted crops (5 s)
+//   harvester  — harvests ready crops (4 s)
 
 export const CHOMB_CATALOG = [
     // Starters (already in roster)
-    { catalogKey: "biscuit", name: "Biscuit", emoji: "🐰", specialty: "Watering",    level: 1, cost: 0  },
-    { catalogKey: "mochi",   name: "Mochi",   emoji: "🐸", specialty: "Harvesting",  level: 1, cost: 0  },
-    { catalogKey: "sprout",  name: "Sprout",  emoji: "🐢", specialty: "Fertilizing", level: 1, cost: 0  },
+    { catalogKey: "biscuit", name: "Biscuit", emoji: "🐰", role: "fertilizer", specialty: "Fertilizing", level: 1, cost: 0  },
+    { catalogKey: "mochi",   name: "Mochi",   emoji: "🐸", role: "waterer",    specialty: "Watering",    level: 1, cost: 0  },
+    { catalogKey: "sprout",  name: "Sprout",  emoji: "🐢", role: "harvester",  specialty: "Harvesting",  level: 1, cost: 0  },
 
     // Purchasable
-    { catalogKey: "cinder",  name: "Cinder",  emoji: "🔥", specialty: "Composting",  level: 1, cost: 15 },
-    { catalogKey: "pebble",  name: "Pebble",  emoji: "🪨", specialty: "Weeding",     level: 1, cost: 20 },
-    { catalogKey: "dewdrop", name: "Dewdrop", emoji: "🦋", specialty: "Rain-calling", level: 2, cost: 35 },
-    { catalogKey: "bramble", name: "Bramble", emoji: "🦔", specialty: "Pruning",      level: 2, cost: 50 },
+    { catalogKey: "cinder",  name: "Cinder",  emoji: "🔥", role: "fertilizer", specialty: "Fertilizing", level: 2, cost: 15 },
+    { catalogKey: "pebble",  name: "Pebble",  emoji: "🪨", role: "harvester",  specialty: "Harvesting",  level: 2, cost: 20 },
+    { catalogKey: "dewdrop", name: "Dewdrop", emoji: "🦋", role: "waterer",    specialty: "Watering",    level: 2, cost: 35 },
+    { catalogKey: "bramble", name: "Bramble", emoji: "🦔", role: "fertilizer", specialty: "Fertilizing", level: 3, cost: 50 },
 ];

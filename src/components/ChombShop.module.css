@@ -82,6 +82,18 @@
     color: #9e7040;
 }
 
+/* Role badge */
+.roleBadge {
+    display: inline-block;
+    font-size: 0.55rem;
+    font-weight: 700;
+    color: #fff;
+    padding: 1px 5px;
+    border-radius: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
 /* Buy button */
 
 .buyBtn {

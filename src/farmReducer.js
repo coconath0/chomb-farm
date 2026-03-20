@@ -4,44 +4,68 @@ import { CHOMB_CATALOG } from "./data/chombs";
 // Shape
 //   state: { seeds: number, plots: Plot[], chombRoster: Chomb[] }
 //
-//   Plot  : { id: number, cropType: string|null, chombId: number|null,
-//             timerSeconds: number|null, wilted: boolean }
-//   Chomb : { id: number, catalogKey: string, name: string, specialty: string, level: number, busy: boolean }
+//   Plot  : { id: number, phase: PlotPhase, cropType: string|null,
+//             chombId: number|null, timerSeconds: number|null }
+//   Chomb : { id: number, catalogKey: string, name: string, role: string,
+//             specialty: string, level: number, busy: boolean }
+//
+//   PlotPhase:
+//     "empty"       → drop a fertilizer Chomb
+//     "fertilizing" → Chomb working 4 s
+//     "fertilized"  → pick a crop
+//     "needs_water" → drop a waterer Chomb
+//     "watering"    → Chomb working 5 s
+//     "growing"     → auto-timer 30 s (no Chomb)
+//     "ready"       → drop a harvester Chomb
+//     "harvesting"  → Chomb working 4 s → done, seeds earned
 // ---------------------------------------------------------------------------
 
-// Initial state 
+// Duration (seconds) for each timed phase
+export const PHASE_TIMERS = {
+    fertilizing: 4,
+    watering:    5,
+    growing:     30,
+    harvesting:  4,
+};
+
+// Seed yield per crop on a successful harvest
+const CROP_SEEDS = {
+    carrot: 5,
+    wheat:  8,
+    corn:   12,
+    tomato: 15,
+};
 
 const makePlot = (id) => ({
     id,
+    phase: "empty",
     cropType: null,
     chombId: null,
     timerSeconds: null,
-    wilted: false,
 });
 
 export const initialState = {
     seeds: 10,
     plots: Array.from({ length: 9 }, (_, i) => makePlot(i + 1)),
     chombRoster: [
-        { id: 1, catalogKey: "biscuit", name: "Biscuit", specialty: "Watering",    level: 1, busy: false },
-        { id: 2, catalogKey: "mochi",   name: "Mochi",   specialty: "Harvesting",  level: 1, busy: false },
-        { id: 3, catalogKey: "sprout",  name: "Sprout",  specialty: "Fertilizing", level: 1, busy: false },
+        { id: 1, catalogKey: "biscuit", name: "Biscuit", role: "fertilizer", specialty: "Fertilizing", level: 1, busy: false },
+        { id: 2, catalogKey: "mochi",   name: "Mochi",   role: "waterer",    specialty: "Watering",    level: 1, busy: false },
+        { id: 3, catalogKey: "sprout",  name: "Sprout",  role: "harvester",  specialty: "Harvesting",  level: 1, busy: false },
     ],
 };
 
-// Action types 
+// Action types
 
-export const ASSIGN_CHOMB   = "ASSIGN_CHOMB";   // { plotId, chombId, timerSeconds? }
-export const REASSIGN_CHOMB = "REASSIGN_CHOMB"; // { plotId, chombId, timerSeconds? }
-export const HARVEST_PLOT   = "HARVEST_PLOT";   // { plotId, seedReward }
-export const WILT_PLOT      = "WILT_PLOT";      // { plotId }
-export const TICK_PLOT      = "TICK_PLOT";      // { plotId }
-export const REPLANT_PLOT   = "REPLANT_PLOT";   // { plotId }
-export const UNLOCK_CHOMB   = "UNLOCK_CHOMB";   // { catalogKey }
-export const EARN_SEEDS     = "EARN_SEEDS";     // { amount }
-export const ADD_CROP       = "ADD_CROP";       // { plotId, cropType, timerSeconds }
+export const TICK_PLOT       = "TICK_PLOT";       // { plotId }
+export const COMPLETE_PHASE  = "COMPLETE_PHASE";  // { plotId }
+export const START_FERTILIZE = "START_FERTILIZE"; // { plotId, chombId }
+export const PLANT           = "PLANT";           // { plotId, cropType }
+export const START_WATER     = "START_WATER";     // { plotId, chombId }
+export const START_HARVEST   = "START_HARVEST";   // { plotId, chombId }
+export const UNLOCK_CHOMB    = "UNLOCK_CHOMB";    // { catalogKey }
+export const EARN_SEEDS      = "EARN_SEEDS";      // { amount }
 
-// Helpers 
+// Helpers
 
 const updatePlot = (plots, plotId, patch) =>
     plots.map((p) => (p.id === plotId ? { ...p, ...patch } : p));
@@ -49,97 +73,147 @@ const updatePlot = (plots, plotId, patch) =>
 const updateChomb = (roster, chombId, patch) =>
     roster.map((c) => (c.id === chombId ? { ...c, ...patch } : c));
 
-// Reducer 
+// Reducer
 
 export function farmReducer(state, action) {
     switch (action.type) {
-        // Assign a Chomb to a plot (marks the Chomb as busy)
-        case ASSIGN_CHOMB: {
-            const { plotId, chombId, timerSeconds } = action.payload;
-            const plot = state.plots.find((p) => p.id === plotId);
-            if (!plot || plot.wilted || plot.cropType === null) return state;
 
+        // 1. Player drops a fertilizer Chomb on an empty plot
+        case START_FERTILIZE: {
+            const { plotId, chombId } = action.payload;
+            const plot  = state.plots.find((p) => p.id === plotId);
             const chomb = state.chombRoster.find((c) => c.id === chombId);
-            if (!chomb || chomb.busy) return state;
+            if (!plot || plot.phase !== "empty") return state;
+            if (!chomb || chomb.busy || chomb.role !== "fertilizer") return state;
 
             return {
                 ...state,
                 plots: updatePlot(state.plots, plotId, {
+                    phase: "fertilizing",
                     chombId,
-                    ...(timerSeconds != null && { timerSeconds }),
+                    timerSeconds: PHASE_TIMERS.fertilizing,
                 }),
                 chombRoster: updateChomb(state.chombRoster, chombId, { busy: true }),
             };
         }
 
-        // Swap the Chomb on an already-occupied plot atomically
-        case REASSIGN_CHOMB: {
-            const { plotId, chombId, timerSeconds } = action.payload;
+        // 2. Player selects a crop after plot is fertilized
+        case PLANT: {
+            const { plotId, cropType } = action.payload;
             const plot = state.plots.find((p) => p.id === plotId);
-            if (!plot || plot.wilted || plot.cropType === null) return state;
-
-            const newChomb = state.chombRoster.find((c) => c.id === chombId);
-            if (!newChomb || newChomb.busy) return state;
-
-            const prevChombId = plot.chombId;
-
-            let roster = updateChomb(state.chombRoster, chombId, { busy: true });
-            if (prevChombId != null) {
-                roster = updateChomb(roster, prevChombId, { busy: false });
-            }
+            if (!plot || plot.phase !== "fertilized") return state;
 
             return {
                 ...state,
                 plots: updatePlot(state.plots, plotId, {
+                    phase: "needs_water",
+                    cropType,
+                }),
+            };
+        }
+
+        // 3. Player drops a waterer Chomb on a planted plot
+        case START_WATER: {
+            const { plotId, chombId } = action.payload;
+            const plot  = state.plots.find((p) => p.id === plotId);
+            const chomb = state.chombRoster.find((c) => c.id === chombId);
+            if (!plot || plot.phase !== "needs_water") return state;
+            if (!chomb || chomb.busy || chomb.role !== "waterer") return state;
+
+            return {
+                ...state,
+                plots: updatePlot(state.plots, plotId, {
+                    phase: "watering",
                     chombId,
-                    ...(timerSeconds != null && { timerSeconds }),
+                    timerSeconds: PHASE_TIMERS.watering,
                 }),
-                chombRoster: roster,
+                chombRoster: updateChomb(state.chombRoster, chombId, { busy: true }),
             };
         }
 
-        // Harvest a ready plot: free the Chomb, clear the plot, grant seeds
-        case HARVEST_PLOT: {
-            const { plotId, seedReward = 0 } = action.payload;
-            const plot = state.plots.find((p) => p.id === plotId);
-            if (!plot) return state;
-
-            const freedChombId = plot.chombId;
+        // 4. Player drops a harvester Chomb on a ready plot
+        case START_HARVEST: {
+            const { plotId, chombId } = action.payload;
+            const plot  = state.plots.find((p) => p.id === plotId);
+            const chomb = state.chombRoster.find((c) => c.id === chombId);
+            if (!plot || plot.phase !== "ready") return state;
+            if (!chomb || chomb.busy || chomb.role !== "harvester") return state;
 
             return {
                 ...state,
-                seeds: state.seeds + seedReward,
                 plots: updatePlot(state.plots, plotId, {
-                    cropType: null,
-                    chombId: null,
-                    timerSeconds: null,
-                    wilted: false,
+                    phase: "harvesting",
+                    chombId,
+                    timerSeconds: PHASE_TIMERS.harvesting,
                 }),
-                chombRoster: freedChombId
-                    ? updateChomb(state.chombRoster, freedChombId, { busy: false })
-                    : state.chombRoster,
+                chombRoster: updateChomb(state.chombRoster, chombId, { busy: true }),
             };
         }
 
-        // Mark a plot as wilted (crop died); also frees the assigned Chomb
-        case WILT_PLOT: {
+        // Auto-advance: called by PlotTile's interval when a timed phase ends
+        case COMPLETE_PHASE: {
             const { plotId } = action.payload;
             const plot = state.plots.find((p) => p.id === plotId);
             if (!plot) return state;
 
-            const freedChombId = plot.chombId;
-
-            return {
-                ...state,
-                plots: updatePlot(state.plots, plotId, {
-                    wilted: true,
-                    chombId: null,
-                    timerSeconds: null,
-                }),
-                chombRoster: freedChombId
-                    ? updateChomb(state.chombRoster, freedChombId, { busy: false })
-                    : state.chombRoster,
-            };
+            switch (plot.phase) {
+                case "fertilizing": {
+                    const freed = plot.chombId;
+                    return {
+                        ...state,
+                        plots: updatePlot(state.plots, plotId, {
+                            phase: "fertilized",
+                            chombId: null,
+                            timerSeconds: null,
+                        }),
+                        chombRoster: freed
+                            ? updateChomb(state.chombRoster, freed, { busy: false })
+                            : state.chombRoster,
+                    };
+                }
+                case "watering": {
+                    const freed = plot.chombId;
+                    return {
+                        ...state,
+                        plots: updatePlot(state.plots, plotId, {
+                            phase: "growing",
+                            chombId: null,
+                            timerSeconds: PHASE_TIMERS.growing,
+                        }),
+                        chombRoster: freed
+                            ? updateChomb(state.chombRoster, freed, { busy: false })
+                            : state.chombRoster,
+                    };
+                }
+                case "growing": {
+                    return {
+                        ...state,
+                        plots: updatePlot(state.plots, plotId, {
+                            phase: "ready",
+                            timerSeconds: null,
+                        }),
+                    };
+                }
+                case "harvesting": {
+                    const freed      = plot.chombId;
+                    const seedReward = CROP_SEEDS[plot.cropType?.toLowerCase()] ?? 5;
+                    return {
+                        ...state,
+                        seeds: state.seeds + seedReward,
+                        plots: updatePlot(state.plots, plotId, {
+                            phase: "empty",
+                            cropType: null,
+                            chombId: null,
+                            timerSeconds: null,
+                        }),
+                        chombRoster: freed
+                            ? updateChomb(state.chombRoster, freed, { busy: false })
+                            : state.chombRoster,
+                    };
+                }
+                default:
+                    return state;
+            }
         }
 
         // Decrement a plot's timerSeconds by 1 tick
@@ -155,61 +229,17 @@ export function farmReducer(state, action) {
             };
         }
 
-        // Add seeds to the player's total (e.g. from selling, quests)
         case EARN_SEEDS: {
             const { amount } = action.payload;
             if (typeof amount !== "number" || amount < 0) return state;
             return { ...state, seeds: state.seeds + amount };
         }
 
-        // Clear a wilted plot so a new crop can be planted; frees Chomb if still linked
-        case REPLANT_PLOT: {
-            const { plotId } = action.payload;
-            const plot = state.plots.find((p) => p.id === plotId);
-            if (!plot) return state;
-
-            const freedChombId = plot.chombId;
-
-            return {
-                ...state,
-                plots: updatePlot(state.plots, plotId, {
-                    cropType: null,
-                    chombId: null,
-                    timerSeconds: null,
-                    wilted: false,
-                }),
-                chombRoster: freedChombId
-                    ? updateChomb(state.chombRoster, freedChombId, { busy: false })
-                    : state.chombRoster,
-            };
-        }
-
-        // Plant a crop on an empty, non-wilted plot
-        case ADD_CROP: {
-            const { plotId, cropType, timerSeconds = null } = action.payload;
-            const plot = state.plots.find((p) => p.id === plotId);
-            if (!plot || plot.cropType !== null || plot.wilted) return state;
-
-            return {
-                ...state,
-                plots: updatePlot(state.plots, plotId, {
-                    cropType,
-                    timerSeconds,
-                    wilted: false,
-                }),
-            };
-        }
-
-        // Buy a new Chomb from the catalog; deducts seeds
         case UNLOCK_CHOMB: {
             const { catalogKey } = action.payload;
             const entry = CHOMB_CATALOG.find((c) => c.catalogKey === catalogKey);
             if (!entry) return state;
-
-            // Already owned guard
             if (state.chombRoster.some((c) => c.catalogKey === catalogKey)) return state;
-
-            // Insufficient seeds guard
             if (state.seeds < entry.cost) return state;
 
             const nextId =
@@ -224,6 +254,7 @@ export function farmReducer(state, action) {
                         id: nextId,
                         catalogKey: entry.catalogKey,
                         name: entry.name,
+                        role: entry.role,
                         specialty: entry.specialty,
                         level: entry.level,
                         busy: false,
@@ -236,3 +267,4 @@ export function farmReducer(state, action) {
             return state;
     }
 }
+

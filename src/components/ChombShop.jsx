@@ -3,6 +3,12 @@ import { UNLOCK_CHOMB } from "../farmReducer";
 import { CHOMB_CATALOG } from "../data/chombs";
 import styles from "./ChombShop.module.css";
 
+const ROLE_LABEL = {
+    fertilizer: { label: "Fertilizer", color: "#8b6530" },
+    waterer:    { label: "Waterer",    color: "#3a7bbf" },
+    harvester:  { label: "Harvester",  color: "#5a9e30" },
+};
+
 export default function ChombShop() {
     const { state, dispatch } = useFarm();
 
@@ -34,7 +40,12 @@ export default function ChombShop() {
                                 </div>
                                 <div className={styles.info}>
                                     <span className={styles.name}>{entry.name}</span>
-                                    <span className={styles.specialty}>{entry.specialty}</span>
+                                    <span
+                                        className={styles.roleBadge}
+                                        style={{ backgroundColor: (ROLE_LABEL[entry.role] ?? {}).color ?? "#666" }}
+                                    >
+                                        {(ROLE_LABEL[entry.role] ?? { label: entry.role }).label}
+                                    </span>
                                     <span className={styles.level}>Lv. {entry.level}</span>
                                 </div>
                                 <button
