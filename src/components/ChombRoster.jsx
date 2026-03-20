@@ -1,8 +1,14 @@
 import { useFarm } from "../FarmContext";
+import { CHOMB_CATALOG } from "../data/chombs";
 import styles from "./ChombRoster.module.css";
+
+const CHOMB_STATE_EMOJI = { idle: "😴", working: "🐛" };
 
 function ChombCard({ chomb }) {
     const busy = chomb.busy;
+    const catalogEntry = CHOMB_CATALOG.find((c) => c.catalogKey === chomb.catalogKey);
+    const typeEmoji  = catalogEntry?.emoji ?? "🐾";
+    const chombState = busy ? "working" : "idle";
 
     function handleDragStart(e) {
         e.dataTransfer.setData("chombId", String(chomb.id));
@@ -16,6 +22,12 @@ function ChombCard({ chomb }) {
             onDragStart={!busy ? handleDragStart : undefined}
             aria-disabled={busy}
         >
+            <div className={styles.cardHeader}>
+                <div className={styles.sprite} data-state={chombState}>
+                    <span className={styles.spriteEmoji}>{typeEmoji}</span>
+                </div>
+                <span className={styles.stateEmoji}>{CHOMB_STATE_EMOJI[chombState]}</span>
+            </div>
             <span className={styles.name}>{chomb.name}</span>
             <span className={styles.specialty}>{chomb.specialty}</span>
             {busy && <span className={styles.busyBadge}>working…</span>}

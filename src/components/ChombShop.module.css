@@ -42,6 +42,24 @@
     gap: 6px;
 }
 
+/* ── Sprite placeholder ──────────────────────────────────────
+   data-state: "shop"
+   ─────────────────────────────────────────────────────────── */
+.sprite {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+}
+
+.spriteEmoji {
+    font-size: 1.1rem;
+    line-height: 1;
+    user-select: none;
+}
+
 .info {
     display: flex;
     flex-direction: column;

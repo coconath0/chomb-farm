@@ -29,6 +29,9 @@ export default function ChombShop() {
                         const canAfford = state.seeds >= entry.cost;
                         return (
                             <li key={entry.catalogKey} className={styles.entry}>
+                                <div className={styles.sprite} data-state="shop">
+                                    <span className={styles.spriteEmoji}>{entry.emoji}</span>
+                                </div>
                                 <div className={styles.info}>
                                     <span className={styles.name}>{entry.name}</span>
                                     <span className={styles.specialty}>{entry.specialty}</span>

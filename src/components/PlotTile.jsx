@@ -24,6 +24,11 @@ const CROP_SEEDS = {
 };
 const DEFAULT_SEEDS = 5;
 
+// Sprite state → emoji. Swap to real sprite sheets on Prompt 10 —
+// the <div className={styles.sprite} data-state={...}> wrapper stays identical.
+const PLOT_EMOJI       = { empty: "🟫", growing: "🌱", ready: "🌾", wilted: "🍂" };
+const CHOMB_STATE_EMOJI = { working: "🐛", celebrating: "🎉" };
+
 export default function PlotTile({ plot }) {
     const { state, dispatch } = useFarm();
     const [isDragOver, setIsDragOver] = useState(false);
@@ -105,6 +110,21 @@ export default function PlotTile({ plot }) {
         ? state.chombRoster.find((c) => c.id === plot.chombId)
         : null;
 
+    // Derive sprite display state
+    const isReady =
+        !!plot.cropType &&
+        !plot.wilted &&
+        plot.chombId != null &&
+        plot.timerSeconds != null &&
+        plot.timerSeconds <= 10;
+
+    let plotState = "empty";
+    if (plot.wilted)       plotState = "wilted";
+    else if (isReady)      plotState = "ready";
+    else if (plot.cropType) plotState = "growing";
+
+    const chombState = isReady ? "celebrating" : "working";
+
     const tileClass = [
         styles.tile,
         plot.wilted ? styles.wilted : "",
@@ -128,11 +148,16 @@ export default function PlotTile({ plot }) {
             onDrop={handleDrop}
         >
             {!plot.cropType && !plot.wilted && (
-                <span className={styles.emptyLabel}>empty</span>
+                <div className={styles.sprite} data-state="empty">
+                    <span className={styles.spriteEmoji}>{PLOT_EMOJI.empty}</span>
+                </div>
             )}
 
             {plot.wilted && (
                 <div className={styles.wiltedOverlay}>
+                    <div className={styles.sprite} data-state="wilted">
+                        <span className={styles.spriteEmoji}>{PLOT_EMOJI.wilted}</span>
+                    </div>
                     <span className={styles.wiltedLabel}>wilted</span>
                     <button
                         className={styles.replantBtn}
@@ -145,10 +170,20 @@ export default function PlotTile({ plot }) {
 
             {plot.cropType && !plot.wilted && (
                 <div className={styles.content}>
+                    <div className={styles.spriteRow}>
+                        <div className={styles.sprite} data-state={plotState}>
+                            <span className={styles.spriteEmoji}>{PLOT_EMOJI[plotState]}</span>
+                        </div>
+                        {chomb && (
+                            <div className={styles.sprite} data-state={chombState}>
+                                <span className={styles.spriteEmoji}>{CHOMB_STATE_EMOJI[chombState]}</span>
+                            </div>
+                        )}
+                    </div>
                     <span className={styles.cropName}>{plot.cropType}</span>
 
                     {chomb && (
-                        <span className={styles.chombName}>🐾 {chomb.name}</span>
+                        <span className={styles.chombName}>{chomb.name}</span>
                     )}
 
                     {progress != null && (
