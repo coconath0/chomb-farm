@@ -6,7 +6,35 @@ Chomb Farm is a cozy pixel-art farming game where you tend a 3×3 plot grid with
 
 ---
 
-## 🛠 Tech Stack
+## 🛠️ Development Roadmap
+
+### ✅ Phase 1 - Foundation
+Setting up the project's data layer and context architecture.
+- `farmReducer.js` with `useReducer` managing `{ seeds, plots[], chombRoster[] }`
+- Actions: `ASSIGN_CHOMB`, `REASSIGN_CHOMB`, `HARVEST_PLOT`, `WILT_PLOT`, `EARN_SEEDS`, `ADD_CROP`
+- `FarmContext.jsx` providing `{ state, dispatch }` via `useFarm()` hook
+- `initialState`: 9 empty plots, 3 starter Chombs (Biscuit, Mochi, Sprout)
+
+### ✅ Phase 2 - Core UI
+Building the visual farm and Chomb management sidebar.
+- `FarmGrid` - 3×3 CSS grid of `PlotTile` components
+- `PlotTile` - renders empty, occupied, and wilted states with a crop progress bar
+- `ChombRoster` - draggable Chomb cards using the HTML5 Drag & Drop API
+- Drop handling on tiles: `ASSIGN_CHOMB` for empty plots, `REASSIGN_CHOMB` for occupied ones
+- Drag-over highlight, busy-state dimming, and per-crop harvest window timers
+
+### 🔄 Phase 3 - Timers & Game Logic *(currently here)*
+Making the farm actually tick.
+- `TICK_PLOT` action decrementing `timerSeconds` each second
+- `useEffect` interval in `PlotTile` tied to `plot.chombId` - cleanup fires on reassignment, stopping the old timer cleanly
+- Auto-wilt when the countdown reaches zero
+
+### 🔮 More phases coming…
+Planting UI, seed economy, Chomb leveling, save/load, sound, and more - still figuring it out as it grows 🌱
+
+---
+
+## 🛠️ Tech Stack
 
 | Tool | Purpose |
 |---|---|
