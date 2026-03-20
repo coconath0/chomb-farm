@@ -29,11 +29,12 @@ export const initialState = {
 
 // Action types 
 
-export const ASSIGN_CHOMB = "ASSIGN_CHOMB"; // { plotId, chombId }
-export const HARVEST_PLOT = "HARVEST_PLOT"; // { plotId, seedReward }
-export const WILT_PLOT = "WILT_PLOT";    // { plotId }
-export const EARN_SEEDS = "EARN_SEEDS";   // { amount }
-export const ADD_CROP = "ADD_CROP";     // { plotId, cropType, timerSeconds }
+export const ASSIGN_CHOMB   = "ASSIGN_CHOMB";   // { plotId, chombId, timerSeconds? }
+export const REASSIGN_CHOMB = "REASSIGN_CHOMB"; // { plotId, chombId, timerSeconds? }
+export const HARVEST_PLOT   = "HARVEST_PLOT";   // { plotId, seedReward }
+export const WILT_PLOT      = "WILT_PLOT";      // { plotId }
+export const EARN_SEEDS     = "EARN_SEEDS";     // { amount }
+export const ADD_CROP       = "ADD_CROP";       // { plotId, cropType, timerSeconds }
 
 // Helpers 
 
@@ -49,7 +50,7 @@ export function farmReducer(state, action) {
     switch (action.type) {
         // Assign a Chomb to a plot (marks the Chomb as busy)
         case ASSIGN_CHOMB: {
-            const { plotId, chombId } = action.payload;
+            const { plotId, chombId, timerSeconds } = action.payload;
             const plot = state.plots.find((p) => p.id === plotId);
             if (!plot || plot.wilted || plot.cropType === null) return state;
 
@@ -58,8 +59,37 @@ export function farmReducer(state, action) {
 
             return {
                 ...state,
-                plots: updatePlot(state.plots, plotId, { chombId }),
+                plots: updatePlot(state.plots, plotId, {
+                    chombId,
+                    ...(timerSeconds != null && { timerSeconds }),
+                }),
                 chombRoster: updateChomb(state.chombRoster, chombId, { busy: true }),
+            };
+        }
+
+        // Swap the Chomb on an already-occupied plot atomically
+        case REASSIGN_CHOMB: {
+            const { plotId, chombId, timerSeconds } = action.payload;
+            const plot = state.plots.find((p) => p.id === plotId);
+            if (!plot || plot.wilted || plot.cropType === null) return state;
+
+            const newChomb = state.chombRoster.find((c) => c.id === chombId);
+            if (!newChomb || newChomb.busy) return state;
+
+            const prevChombId = plot.chombId;
+
+            let roster = updateChomb(state.chombRoster, chombId, { busy: true });
+            if (prevChombId != null) {
+                roster = updateChomb(roster, prevChombId, { busy: false });
+            }
+
+            return {
+                ...state,
+                plots: updatePlot(state.plots, plotId, {
+                    chombId,
+                    ...(timerSeconds != null && { timerSeconds }),
+                }),
+                chombRoster: roster,
             };
         }
 

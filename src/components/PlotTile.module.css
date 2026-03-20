@@ -93,3 +93,10 @@
     color: #2b4d1f;
     opacity: 0.8;
 }
+
+/* Drag-over highlight */
+.dragOver {
+    outline: 3px dashed #f5d04a;
+    outline-offset: -3px;
+    filter: brightness(1.15);
+}
