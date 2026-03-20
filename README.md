@@ -23,14 +23,21 @@ Building the visual farm and Chomb management sidebar.
 - Drop handling on tiles: `ASSIGN_CHOMB` for empty plots, `REASSIGN_CHOMB` for occupied ones
 - Drag-over highlight, busy-state dimming, and per-crop harvest window timers
 
-### 🔄 Phase 3 - Timers & Game Logic *(currently here)*
+### ✅ Phase 3 - Timers & Game Logic
 Making the farm actually tick.
 - `TICK_PLOT` action decrementing `timerSeconds` each second
 - `useEffect` interval in `PlotTile` tied to `plot.chombId` - cleanup fires on reassignment, stopping the old timer cleanly
 - Auto-wilt when the countdown reaches zero
+- Harvest button (visible while `timerSeconds > 10`) dispatching `HARVEST_PLOT` and awarding seeds per crop type
+- Replant button on wilted plots dispatching `REPLANT_PLOT` to reset them to empty
+- `HUD` bar displaying the live seed count from context
+- `ChombShop` sidebar with purchasable Chombs sourced from `chombs.js` catalog; `UNLOCK_CHOMB` deducts seeds and pushes into the roster; Buy button disabled when funds are insufficient
+
+### 🔄 Phase 3.5 - Testing *(currently here)*
+Making sure everything that was built actually holds up.
 
 ### 🔮 More phases coming…
-Planting UI, seed economy, Chomb leveling, save/load, sound, and more - still figuring it out as it grows 🌱
+Planting UI, Chomb leveling, save/load, sound, and more - still figuring it out as it grows 🌱
 
 ---
 
