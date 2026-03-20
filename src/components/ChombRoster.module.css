@@ -73,9 +73,7 @@
     margin-top: 2px;
 }
 
-/* ── Sprite placeholders ─────────────────────────────────────
-   data-state: "idle" | "working"
-   ─────────────────────────────────────────────────────────── */
+/* Sprite placeholders - data-state: "idle" | "working" */
 .sprite {
     display: flex;
     align-items: center;

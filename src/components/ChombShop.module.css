@@ -42,9 +42,7 @@
     gap: 6px;
 }
 
-/* ── Sprite placeholder ──────────────────────────────────────
-   data-state: "shop"
-   ─────────────────────────────────────────────────────────── */
+/* Sprite placeholder - data-state: "shop" */
 .sprite {
     display: flex;
     align-items: center;

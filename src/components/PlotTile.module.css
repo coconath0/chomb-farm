@@ -186,3 +186,73 @@
 .replantBtn:active {
     transform: translateY(0);
 }
+
+/* Empty plot — plant UI */
+.emptyContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    width: 100%;
+    padding: 4px 6px;
+    box-sizing: border-box;
+}
+
+.plantBtn {
+    padding: 3px 10px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #6b4422;
+    background-color: #e8c98a;
+    border: 2px solid #a0722a;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: filter 0.1s, transform 0.1s;
+}
+
+.plantBtn:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+}
+
+/* Crop picker overlay */
+.cropPicker {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px;
+    justify-content: center;
+    width: 100%;
+}
+
+.cropOption {
+    padding: 2px 6px;
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: #1e3a14;
+    background-color: #aee887;
+    border: 1px solid #3e7a30;
+    border-radius: 4px;
+    cursor: pointer;
+    text-transform: capitalize;
+    transition: filter 0.1s;
+}
+
+.cropOption:hover {
+    filter: brightness(1.12);
+}
+
+.cropCancel {
+    padding: 2px 6px;
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: #6b2222;
+    background: none;
+    border: 1px solid #a04040;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: filter 0.1s;
+}
+
+.cropCancel:hover {
+    filter: brightness(1.15);
+}

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useFarm } from "../FarmContext";
-import { ASSIGN_CHOMB, HARVEST_PLOT, REASSIGN_CHOMB, REPLANT_PLOT, TICK_PLOT, WILT_PLOT } from "../farmReducer";
+import { ADD_CROP, ASSIGN_CHOMB, HARVEST_PLOT, REASSIGN_CHOMB, REPLANT_PLOT, TICK_PLOT, WILT_PLOT } from "../farmReducer";
 import styles from "./PlotTile.module.css";
 
 // timerSeconds has no stored maximum yet; we use 60 s as a visual baseline.
@@ -29,9 +29,12 @@ const DEFAULT_SEEDS = 5;
 const PLOT_EMOJI       = { empty: "🟫", growing: "🌱", ready: "🌾", wilted: "🍂" };
 const CHOMB_STATE_EMOJI = { working: "🐛", celebrating: "🎉" };
 
+const PLANTABLE_CROPS = Object.keys(CROP_TIMERS); // ["carrot", "corn", "wheat", "tomato"]
+
 export default function PlotTile({ plot }) {
     const { state, dispatch } = useFarm();
     const [isDragOver, setIsDragOver] = useState(false);
+    const [isPicking, setIsPicking] = useState(false);
 
     const isValidDropTarget = !!plot.cropType && !plot.wilted;
 
@@ -79,6 +82,14 @@ export default function PlotTile({ plot }) {
 
     function handleReplant() {
         dispatch({ type: REPLANT_PLOT, payload: { plotId: plot.id } });
+    }
+
+    function handlePlant(cropType) {
+        dispatch({
+            type: ADD_CROP,
+            payload: { plotId: plot.id, cropType, timerSeconds: CROP_TIMERS[cropType] ?? DEFAULT_TIMER },
+        });
+        setIsPicking(false);
     }
 
     function handleDrop(e) {
@@ -148,8 +159,36 @@ export default function PlotTile({ plot }) {
             onDrop={handleDrop}
         >
             {!plot.cropType && !plot.wilted && (
-                <div className={styles.sprite} data-state="empty">
-                    <span className={styles.spriteEmoji}>{PLOT_EMOJI.empty}</span>
+                <div className={styles.emptyContent}>
+                    <div className={styles.sprite} data-state="empty">
+                        <span className={styles.spriteEmoji}>{PLOT_EMOJI.empty}</span>
+                    </div>
+                    {isPicking ? (
+                        <div className={styles.cropPicker}>
+                            {PLANTABLE_CROPS.map((crop) => (
+                                <button
+                                    key={crop}
+                                    className={styles.cropOption}
+                                    onClick={() => handlePlant(crop)}
+                                >
+                                    {crop}
+                                </button>
+                            ))}
+                            <button
+                                className={styles.cropCancel}
+                                onClick={() => setIsPicking(false)}
+                            >
+                                ✕
+                            </button>
+                        </div>
+                    ) : (
+                        <button
+                            className={styles.plantBtn}
+                            onClick={() => setIsPicking(true)}
+                        >
+                            Plant
+                        </button>
+                    )}
                 </div>
             )}
 
