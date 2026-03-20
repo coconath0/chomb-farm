@@ -4,11 +4,18 @@ import styles from "./ChombRoster.module.css";
 
 const CHOMB_STATE_EMOJI = { idle: "😴", working: "🐛" };
 
+const ROLE_LABEL = {
+    fertilizer: { label: "Fertilizer", color: "#8b6530" },
+    waterer:    { label: "Waterer",    color: "#3a7bbf" },
+    harvester:  { label: "Harvester",  color: "#5a9e30" },
+};
+
 function ChombCard({ chomb }) {
     const busy = chomb.busy;
     const catalogEntry = CHOMB_CATALOG.find((c) => c.catalogKey === chomb.catalogKey);
     const typeEmoji  = catalogEntry?.emoji ?? "🐾";
     const chombState = busy ? "working" : "idle";
+    const roleInfo   = ROLE_LABEL[chomb.role] ?? { label: chomb.role, color: "#666" };
 
     function handleDragStart(e) {
         e.dataTransfer.setData("chombId", String(chomb.id));
@@ -29,7 +36,12 @@ function ChombCard({ chomb }) {
                 <span className={styles.stateEmoji}>{CHOMB_STATE_EMOJI[chombState]}</span>
             </div>
             <span className={styles.name}>{chomb.name}</span>
-            <span className={styles.specialty}>{chomb.specialty}</span>
+            <span
+                className={styles.roleBadge}
+                style={{ backgroundColor: roleInfo.color }}
+            >
+                {roleInfo.label}
+            </span>
             {busy && <span className={styles.busyBadge}>working…</span>}
         </div>
     );
