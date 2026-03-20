@@ -10,6 +10,7 @@ import {
     TICK_PLOT,
 } from "../farmReducer";
 import { CHOMB_CATALOG } from "../data/chombs";
+import ChombSprite from "./ChombSprite";
 import styles from "./PlotTile.module.css";
 
 const PLANTABLE_CROPS = ["carrot", "corn", "wheat", "tomato"];
@@ -146,9 +147,11 @@ export default function PlotTile({ plot }) {
                     </div>
                     {activeChomb && (
                         <div className={styles.sprite} data-state="working">
-                            <span className={styles.spriteEmoji}>
-                                {activeCatalog?.emoji ?? "🐾"}
-                            </span>
+                            <ChombSprite
+                                catalogKey={activeChomb.catalogKey}
+                                busy={true}
+                                size={32}
+                            />
                         </div>
                     )}
                 </div>

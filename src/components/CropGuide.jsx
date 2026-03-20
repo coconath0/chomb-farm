@@ -1,4 +1,4 @@
-import { CROP_SEEDS, PHASE_TIMERS } from "../farmReducer";
+import { CROP_SEEDS, CROP_GROWING_TIMES, PHASE_TIMERS } from "../farmReducer";
 import styles from "./CropGuide.module.css";
 
 const CROP_INFO = [
@@ -8,8 +8,9 @@ const CROP_INFO = [
     { key: "tomato", label: "Tomato", icon: "🍅" },
 ];
 
-// Total time a player actively waits: watering + growing + harvesting
-const totalTime = PHASE_TIMERS.watering + PHASE_TIMERS.growing + PHASE_TIMERS.harvesting;
+// Per-crop total: watering + crop-specific growing + harvesting
+const totalTime = (key) =>
+    PHASE_TIMERS.watering + CROP_GROWING_TIMES[key] + PHASE_TIMERS.harvesting;
 
 export default function CropGuide() {
     return (
@@ -30,7 +31,7 @@ export default function CropGuide() {
                                 <span className={styles.icon}>{icon}</span>
                                 {label}
                             </td>
-                            <td className={styles.cell}>{totalTime}s</td>
+                            <td className={styles.cell}>{totalTime(key)}s</td>
                             <td className={styles.cell}>+{CROP_SEEDS[key]}</td>
                         </tr>
                     ))}
