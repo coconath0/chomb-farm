@@ -9,13 +9,13 @@
 
 export const CHOMB_CATALOG = [
     // Starters (already in roster)
-    { catalogKey: "biscuit", name: "Biscuit", emoji: "🐰", role: "fertilizer", specialty: "Fertilizing", level: 1, cost: 0  },
-    { catalogKey: "mochi",   name: "Mochi",   emoji: "🐸", role: "waterer",    specialty: "Watering",    level: 1, cost: 0  },
-    { catalogKey: "sprout",  name: "Sprout",  emoji: "🐢", role: "harvester",  specialty: "Harvesting",  level: 1, cost: 0  },
+    { catalogKey: "biscuit", name: "Biscuit", role: "fertilizer", specialty: "Fertilizing", level: 1, cost: 0  },
+    { catalogKey: "mochi",   name: "Mochi",   role: "waterer",    specialty: "Watering",    level: 1, cost: 0  },
+    { catalogKey: "sprout",  name: "Sprout",  role: "harvester",  specialty: "Harvesting",  level: 1, cost: 0  },
 
     // Purchasable
-    { catalogKey: "cinder",  name: "Cinder",  emoji: "🔥", role: "fertilizer", specialty: "Fertilizing", level: 2, cost: 15 },
-    { catalogKey: "pebble",  name: "Pebble",  emoji: "🪨", role: "harvester",  specialty: "Harvesting",  level: 2, cost: 20 },
-    { catalogKey: "dewdrop", name: "Dewdrop", emoji: "🦋", role: "waterer",    specialty: "Watering",    level: 2, cost: 35 },
-    { catalogKey: "bramble", name: "Bramble", emoji: "🦔", role: "fertilizer", specialty: "Fertilizing", level: 3, cost: 50 },
+    { catalogKey: "cinder",  name: "Cinder",  role: "fertilizer", specialty: "Fertilizing", level: 2, cost: 15 },
+    { catalogKey: "pebble",  name: "Pebble",  role: "harvester",  specialty: "Harvesting",  level: 2, cost: 20 },
+    { catalogKey: "dewdrop", name: "Dewdrop", role: "waterer",    specialty: "Watering",    level: 2, cost: 35 },
+    { catalogKey: "bramble", name: "Bramble", role: "fertilizer", specialty: "Fertilizing", level: 3, cost: 50 },
 ];

@@ -16,11 +16,11 @@ const PLANTABLE_CROPS = ["carrot", "corn", "wheat", "tomato"];
 
 // Visual emoji per phase
 const PHASE_EMOJI = {
-    empty:       "🟫",
-    fertilizing: "🟫",
+    empty:       "🪹",
+    fertilizing: "🔄",
     fertilized:  "🟤",
-    needs_water: "🌱",
-    watering:    "🌱",
+    needs_water: "💧",
+    watering:    "👩🏻‍🌾",
     growing:     "🌱",
     ready:       "🌾",
     harvesting:  "🌾",
