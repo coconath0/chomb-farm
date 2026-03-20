@@ -32,6 +32,18 @@
     filter: brightness(1.06);
 }
 
+/* Pulse highlight when a compatible selected Chomb can be placed here */
+.tapTarget {
+    outline: 2px solid #f5c842;
+    outline-offset: 2px;
+    animation: tapPulse 0.8s ease-in-out infinite alternate;
+}
+
+@keyframes tapPulse {
+    from { outline-color: #f5c842; }
+    to   { outline-color: #e07c10; }
+}
+
 /* Phase colour overlay via ::before pseudo-element \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
 .tile::before {
     content: '';

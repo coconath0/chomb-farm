@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useFarm } from "../FarmContext";
+import { useSelection } from "../SelectionContext";
 import {
     COMPLETE_PHASE,
     PHASE_TIMERS,
@@ -19,7 +20,7 @@ const PLANTABLE_CROPS = ["carrot", "corn", "wheat", "tomato"];
 const PHASE_EMOJI = {
     empty:       "🪹",
     fertilizing: "🔄",
-    fertilized:  "🟤",
+    fertilized:  " ",
     needs_water: "💧",
     watering:    "👩🏻‍🌾",
     growing:     "🌱",
@@ -48,6 +49,7 @@ const PHASE_HINT = {
 
 export default function PlotTile({ plot }) {
     const { state, dispatch } = useFarm();
+    const { selectedChombId, setSelectedChombId } = useSelection();
     const [isDragOver, setIsDragOver] = useState(false);
 
     // Ref so the interval callback always reads the latest timerSeconds
@@ -98,9 +100,24 @@ export default function PlotTile({ plot }) {
 
         const chombId = parseInt(e.dataTransfer.getData("chombId"), 10);
         if (!chombId) return;
+        assignChomb(chombId);
+    }
 
+    // Tap-to-place: assign the currently selected chomb when the tile is tapped
+    function handleClick() {
+        if (!selectedChombId) return;
+        const requiredRole = PHASE_REQUIRED_ROLE[plot.phase];
+        if (!requiredRole) return;
+        assignChomb(selectedChombId);
+    }
+
+    function assignChomb(chombId) {
+        const requiredRole = PHASE_REQUIRED_ROLE[plot.phase];
+        if (!requiredRole) return;
         const chomb = state.chombRoster.find((c) => c.id === chombId);
         if (!chomb || chomb.busy || chomb.role !== requiredRole) return;
+
+        setSelectedChombId(null);
 
         if (plot.phase === "empty") {
             dispatch({ type: START_FERTILIZE, payload: { plotId: plot.id, chombId } });
@@ -125,10 +142,20 @@ export default function PlotTile({ plot }) {
     else if (["needs_water", "watering", "growing"].includes(plot.phase)) phaseClass = styles.planted;
     else if (["ready", "harvesting"].includes(plot.phase))                phaseClass = styles.readyPhase;
 
+    const canAcceptSelected = selectedChombId
+        ? (() => {
+            const requiredRole = PHASE_REQUIRED_ROLE[plot.phase];
+            if (!requiredRole) return false;
+            const sc = state.chombRoster.find((c) => c.id === selectedChombId);
+            return sc && !sc.busy && sc.role === requiredRole;
+          })()
+        : false;
+
     const tileClass = [
         styles.tile,
         phaseClass,
         isDragOver && PHASE_REQUIRED_ROLE[plot.phase] ? styles.dragOver : "",
+        canAcceptSelected ? styles.tapTarget : "",
     ].filter(Boolean).join(" ");
 
     return (
@@ -138,20 +165,20 @@ export default function PlotTile({ plot }) {
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
+            onClick={handleClick}
         >
             <div className={styles.content}>
-                {/* Sprites */}
+                {/* Sprites — show ChombSprite when working, emoji otherwise */}
                 <div className={styles.spriteRow}>
-                    <div className={styles.sprite} data-state={plot.phase}>
-                        <span className={styles.spriteEmoji}>{PHASE_EMOJI[plot.phase]}</span>
-                    </div>
-                    {activeChomb && (
-                        <div className={styles.sprite} data-state="working">
-                            <ChombSprite
-                                catalogKey={activeChomb.catalogKey}
-                                busy={true}
-                                size={32}
-                            />
+                    {activeChomb ? (
+                        <ChombSprite
+                            catalogKey={activeChomb.catalogKey}
+                            busy={true}
+                            size={48}
+                        />
+                    ) : (
+                        <div className={styles.sprite} data-state={plot.phase}>
+                            <span className={styles.spriteEmoji}>{PHASE_EMOJI[plot.phase]}</span>
                         </div>
                     )}
                 </div>
