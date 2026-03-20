@@ -33,3 +33,37 @@
   width: 176px;
   flex-shrink: 0;
 }
+
+/* Mobile-only roster strip above the grid */
+.mobileRoster {
+  display: none;
+  width: 100%;
+  max-width: min(420px, 90vw);
+}
+
+/* Mobile-only bottom nav wrapper */
+.bottomNavWrapper {
+  display: none;
+}
+
+/* ── Mobile layout (≤ 799px) ─────────────────────────────────── */
+@media (max-width: 799px) {
+  .app {
+    padding-bottom: 72px; /* room for fixed bottom nav */
+    justify-content: flex-start;
+    padding-top: 12px;
+  }
+
+  .leftSidebar,
+  .sidebar {
+    display: none;
+  }
+
+  .mobileRoster {
+    display: block;
+  }
+
+  .bottomNavWrapper {
+    display: block;
+  }
+}
