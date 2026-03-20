@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useFarm } from "../FarmContext";
-import { ASSIGN_CHOMB, REASSIGN_CHOMB } from "../farmReducer";
+import { ASSIGN_CHOMB, REASSIGN_CHOMB, TICK_PLOT, WILT_PLOT } from "../farmReducer";
 import styles from "./PlotTile.module.css";
 
 // timerSeconds has no stored maximum yet; we use 60 s as a visual baseline.
@@ -20,6 +20,32 @@ export default function PlotTile({ plot }) {
     const [isDragOver, setIsDragOver] = useState(false);
 
     const isValidDropTarget = !!plot.cropType && !plot.wilted;
+
+    // Keep a ref so the interval callback always sees the latest timerSeconds
+    // without needing it as an effect dependency (which would restart the
+    // interval every second and defeat the reassignment-cleanup guarantee).
+    const timerRef = useRef(plot.timerSeconds);
+    timerRef.current = plot.timerSeconds;
+
+    useEffect(() => {
+        // Only tick when a Chomb is actively working and there is time left.
+        if (!plot.chombId || plot.timerSeconds == null || plot.timerSeconds <= 0) return;
+
+        const id = setInterval(() => {
+            if (timerRef.current <= 1) {
+                // Timer has expired — clear first, then wilt.
+                clearInterval(id);
+                dispatch({ type: WILT_PLOT, payload: { plotId: plot.id } });
+            } else {
+                dispatch({ type: TICK_PLOT, payload: { plotId: plot.id } });
+            }
+        }, 1000);
+
+        // Cleanup fires on unmount AND whenever plot.chombId changes
+        // (reassignment or unassignment), stopping the previous timer.
+        return () => clearInterval(id);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [plot.chombId, plot.id, dispatch]);
 
     function handleDragOver(e) {
         if (!isValidDropTarget) return;

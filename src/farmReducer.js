@@ -33,6 +33,7 @@ export const ASSIGN_CHOMB   = "ASSIGN_CHOMB";   // { plotId, chombId, timerSecon
 export const REASSIGN_CHOMB = "REASSIGN_CHOMB"; // { plotId, chombId, timerSeconds? }
 export const HARVEST_PLOT   = "HARVEST_PLOT";   // { plotId, seedReward }
 export const WILT_PLOT      = "WILT_PLOT";      // { plotId }
+export const TICK_PLOT      = "TICK_PLOT";      // { plotId }
 export const EARN_SEEDS     = "EARN_SEEDS";     // { amount }
 export const ADD_CROP       = "ADD_CROP";       // { plotId, cropType, timerSeconds }
 
@@ -134,6 +135,19 @@ export function farmReducer(state, action) {
                 chombRoster: freedChombId
                     ? updateChomb(state.chombRoster, freedChombId, { busy: false })
                     : state.chombRoster,
+            };
+        }
+
+        // Decrement a plot's timerSeconds by 1 tick
+        case TICK_PLOT: {
+            const { plotId } = action.payload;
+            const plot = state.plots.find((p) => p.id === plotId);
+            if (!plot || plot.timerSeconds == null) return state;
+            return {
+                ...state,
+                plots: updatePlot(state.plots, plotId, {
+                    timerSeconds: Math.max(0, plot.timerSeconds - 1),
+                }),
             };
         }
 
