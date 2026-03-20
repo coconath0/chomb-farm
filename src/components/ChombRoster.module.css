@@ -72,3 +72,32 @@
     font-style: italic;
     margin-top: 2px;
 }
+
+/* Sprite placeholders - data-state: "idle" | "working" */
+.sprite {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+}
+
+.spriteEmoji {
+    font-size: 1.3rem;
+    line-height: 1;
+    user-select: none;
+}
+
+.cardHeader {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 2px;
+}
+
+.stateEmoji {
+    font-size: 0.9rem;
+    line-height: 1;
+    user-select: none;
+}
