@@ -1,0 +1,23 @@
+.hud {
+    width: 100%;
+    max-width: 660px;
+    background-color: #f5e6c8;
+    border: 2px solid #b8882e;
+    border-radius: 8px;
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    box-sizing: border-box;
+}
+
+.seedCount {
+    font-size: 1rem;
+    color: #3b2f1e;
+    letter-spacing: 0.02em;
+}
+
+.seedCount strong {
+    font-size: 1.1rem;
+    color: #3e7a30;
+}
