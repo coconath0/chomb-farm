@@ -29,7 +29,7 @@ export const PHASE_TIMERS = {
 };
 
 // Seed yield per crop on a successful harvest
-const CROP_SEEDS = {
+export const CROP_SEEDS = {
     carrot: 5,
     wheat:  8,
     corn:   12,

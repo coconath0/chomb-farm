@@ -25,3 +25,11 @@
   width: 176px;
   flex-shrink: 0;
 }
+
+.leftSidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 176px;
+  flex-shrink: 0;
+}
