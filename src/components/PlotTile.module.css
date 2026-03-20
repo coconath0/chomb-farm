@@ -1,0 +1,95 @@
+.tile {
+    width: 100%;
+    aspect-ratio: 1;
+    background-color: #c4965a;
+    border: 3px solid #7a5230;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    cursor: default;
+    box-sizing: border-box;
+    transition: background-color 0.2s;
+}
+
+.tile:hover {
+    filter: brightness(1.08);
+}
+
+/* States */
+
+.occupied {
+    background-color: #78b86a;
+    border-color: #3e7a30;
+}
+
+.wilted {
+    background-color: #9e9070;
+    border-color: #5c5040;
+}
+
+/* Labels */
+
+.emptyLabel {
+    font-size: 0.65rem;
+    color: #6b4422;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    opacity: 0.6;
+}
+
+.wiltedLabel {
+    font-size: 0.65rem;
+    color: #4a4030;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    opacity: 0.7;
+}
+
+/* Occupied content */
+
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    width: 100%;
+    padding: 6px 8px;
+    box-sizing: border-box;
+}
+
+.cropName {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #1e3a14;
+    text-transform: capitalize;
+}
+
+.chombName {
+    font-size: 0.65rem;
+    color: #2b4d1f;
+}
+
+/* Progress bar */
+
+.progressTrack {
+    width: 80%;
+    height: 6px;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.progressFill {
+    height: 100%;
+    background-color: #f5d04a;
+    border-radius: 3px;
+    transition: width 0.4s linear;
+}
+
+.timer {
+    font-size: 0.6rem;
+    color: #2b4d1f;
+    opacity: 0.8;
+}

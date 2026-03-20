@@ -4,7 +4,7 @@
 //
 //   Plot  : { id: number, cropType: string|null, chombId: number|null,
 //             timerSeconds: number|null, wilted: boolean }
-//   Chomb : { id: number, name: string, level: number, busy: boolean }
+//   Chomb : { id: number, name: string, specialty: string, level: number, busy: boolean }
 // ---------------------------------------------------------------------------
 
 // Initial state 
@@ -21,9 +21,9 @@ export const initialState = {
     seeds: 10,
     plots: Array.from({ length: 9 }, (_, i) => makePlot(i + 1)),
     chombRoster: [
-        { id: 1, name: "Biscuit", level: 1, busy: false },
-        { id: 2, name: "Mochi", level: 1, busy: false },
-        { id: 3, name: "Sprout", level: 1, busy: false },
+        { id: 1, name: "Biscuit", specialty: "Watering",   level: 1, busy: false },
+        { id: 2, name: "Mochi",   specialty: "Harvesting",  level: 1, busy: false },
+        { id: 3, name: "Sprout", specialty: "Fertilizing", level: 1, busy: false },
     ],
 };
 
