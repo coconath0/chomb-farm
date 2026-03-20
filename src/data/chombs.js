@@ -14,8 +14,8 @@ export const CHOMB_CATALOG = [
     { catalogKey: "sprout",  name: "Sprout",  role: "harvester",  specialty: "Harvesting",  level: 1, cost: 0  },
 
     // Purchasable
-    { catalogKey: "cinder",  name: "Cinder",  role: "fertilizer", specialty: "Fertilizing", level: 2, cost: 15 },
-    { catalogKey: "pebble",  name: "Pebble",  role: "harvester",  specialty: "Harvesting",  level: 2, cost: 20 },
-    { catalogKey: "dewdrop", name: "Dewdrop", role: "waterer",    specialty: "Watering",    level: 2, cost: 35 },
-    { catalogKey: "bramble", name: "Bramble", role: "fertilizer", specialty: "Fertilizing", level: 3, cost: 50 },
+    { catalogKey: "cinder",  name: "Cinder",  role: "fertilizer", specialty: "Fertilizing", level: 2, cost: 10 },
+    { catalogKey: "pebble",  name: "Pebble",  role: "harvester",  specialty: "Harvesting",  level: 2, cost: 15 },
+    { catalogKey: "dewdrop", name: "Dewdrop", role: "waterer",    specialty: "Watering",    level: 2, cost: 25 },
+    { catalogKey: "bramble", name: "Bramble", role: "fertilizer", specialty: "Fertilizing", level: 3, cost: 30 },
 ];
