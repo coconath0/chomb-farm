@@ -5,10 +5,19 @@ export default function HUD() {
     const { state } = useFarm();
 
     return (
-        <div className={styles.hud}>
-            <span className={styles.seedCount}>
-                🌱 <strong>{state.seeds}</strong> seeds
-            </span>
-        </div>
+        <header className={styles.hud}>
+            {/* Mini character portrait — shows first frame of Chomb1 */}
+            <div className={styles.portrait}>
+                <div className={styles.portraitSprite} />
+            </div>
+
+            <span className={styles.title}>CHOMB FARM</span>
+
+            {/* Seed / coin counter */}
+            <div className={styles.seedBox}>
+                <div className={styles.coinIcon} aria-hidden="true" />
+                <span className={styles.seedCount}>{state.seeds}</span>
+            </div>
+        </header>
     );
 }

@@ -1,23 +1,80 @@
+/* Top bar – wooden-panel HUD */
 .hud {
     width: 100%;
-    max-width: 660px;
-    background-color: #f5e6c8;
-    border: 2px solid #b8882e;
-    border-radius: 8px;
-    padding: 8px 16px;
+    max-width: 700px;
+    background: #f3e5c2;
+    border: 3px solid #3b2f1e;
+    box-shadow:
+        inset 0 0 0 2px #deb887,
+        0 4px 0 #3b2f1e;
+    border-radius: 4px;
+    padding: 6px 12px;
     display: flex;
     align-items: center;
-    justify-content: flex-end;
+    gap: 10px;
     box-sizing: border-box;
 }
 
-.seedCount {
-    font-size: 1rem;
-    color: #3b2f1e;
-    letter-spacing: 0.02em;
+/* Portrait box (top-left like Sprout Lands) */
+.portrait {
+    width: 44px;
+    height: 44px;
+    background: #deb887;
+    border: 3px solid #3b2f1e;
+    box-shadow: inset 0 0 0 1px #c8892e;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    flex-shrink: 0;
 }
 
-.seedCount strong {
-    font-size: 1.1rem;
-    color: #3e7a30;
+/* First 32×32 frame of Chomb1.png (224×512, frame at 0,0) */
+.portraitSprite {
+    width: 32px;
+    height: 32px;
+    background-image: url('/sprites/chom-bomb/Chomb%20All/Chomb1.png');
+    background-size: 224px 512px; /* native size */
+    background-position: 0 0;
+    background-repeat: no-repeat;
+    image-rendering: pixelated;
+}
+
+/* Title */
+.title {
+    flex: 1;
+    font-size: 1rem;
+    color: #3b2f1e;
+    letter-spacing: 0.1em;
+    text-shadow: 1px 1px 0 #deb887;
+}
+
+/* Seed / coin counter */
+.seedBox {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: #3b2f1e;
+    border-radius: 3px;
+    padding: 4px 8px;
+}
+
+/* First 16×16 frame of coins.png (128×48, first coin at top-left) */
+.coinIcon {
+    width: 16px;
+    height: 16px;
+    background-image: url('/sprites/sprout-land/UI%20Sprites/Icons/special%20icons/coins.png');
+    background-size: 128px 48px; /* native */
+    background-position: 0 -16px; /* row 1 = cleaner round coin */
+    background-repeat: no-repeat;
+    image-rendering: pixelated;
+    flex-shrink: 0;
+}
+
+.seedCount {
+    font-size: 0.9rem;
+    color: #f5d04a;
+    min-width: 2ch;
+    text-align: right;
 }
