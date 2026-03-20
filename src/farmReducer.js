@@ -34,6 +34,7 @@ export const REASSIGN_CHOMB = "REASSIGN_CHOMB"; // { plotId, chombId, timerSecon
 export const HARVEST_PLOT   = "HARVEST_PLOT";   // { plotId, seedReward }
 export const WILT_PLOT      = "WILT_PLOT";      // { plotId }
 export const TICK_PLOT      = "TICK_PLOT";      // { plotId }
+export const REPLANT_PLOT   = "REPLANT_PLOT";   // { plotId }
 export const EARN_SEEDS     = "EARN_SEEDS";     // { amount }
 export const ADD_CROP       = "ADD_CROP";       // { plotId, cropType, timerSeconds }
 
@@ -156,6 +157,28 @@ export function farmReducer(state, action) {
             const { amount } = action.payload;
             if (typeof amount !== "number" || amount < 0) return state;
             return { ...state, seeds: state.seeds + amount };
+        }
+
+        // Clear a wilted plot so a new crop can be planted; frees Chomb if still linked
+        case REPLANT_PLOT: {
+            const { plotId } = action.payload;
+            const plot = state.plots.find((p) => p.id === plotId);
+            if (!plot) return state;
+
+            const freedChombId = plot.chombId;
+
+            return {
+                ...state,
+                plots: updatePlot(state.plots, plotId, {
+                    cropType: null,
+                    chombId: null,
+                    timerSeconds: null,
+                    wilted: false,
+                }),
+                chombRoster: freedChombId
+                    ? updateChomb(state.chombRoster, freedChombId, { busy: false })
+                    : state.chombRoster,
+            };
         }
 
         // Plant a crop on an empty, non-wilted plot

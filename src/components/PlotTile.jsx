@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useFarm } from "../FarmContext";
-import { ASSIGN_CHOMB, REASSIGN_CHOMB, TICK_PLOT, WILT_PLOT } from "../farmReducer";
+import { ASSIGN_CHOMB, HARVEST_PLOT, REASSIGN_CHOMB, REPLANT_PLOT, TICK_PLOT, WILT_PLOT } from "../farmReducer";
 import styles from "./PlotTile.module.css";
 
 // timerSeconds has no stored maximum yet; we use 60 s as a visual baseline.
@@ -14,6 +14,15 @@ const CROP_TIMERS = {
     tomato: 90,
 };
 const DEFAULT_TIMER = 60;
+
+// Seed rewards earned on a successful harvest per crop type.
+const CROP_SEEDS = {
+    carrot: 5,
+    wheat:  8,
+    corn:   12,
+    tomato: 15,
+};
+const DEFAULT_SEEDS = 5;
 
 export default function PlotTile({ plot }) {
     const { state, dispatch } = useFarm();
@@ -56,6 +65,15 @@ export default function PlotTile({ plot }) {
 
     function handleDragLeave() {
         setIsDragOver(false);
+    }
+
+    function handleHarvest() {
+        const seedReward = CROP_SEEDS[plot.cropType?.toLowerCase()] ?? DEFAULT_SEEDS;
+        dispatch({ type: HARVEST_PLOT, payload: { plotId: plot.id, seedReward } });
+    }
+
+    function handleReplant() {
+        dispatch({ type: REPLANT_PLOT, payload: { plotId: plot.id } });
     }
 
     function handleDrop(e) {
@@ -114,7 +132,15 @@ export default function PlotTile({ plot }) {
             )}
 
             {plot.wilted && (
-                <span className={styles.wiltedLabel}>wilted</span>
+                <div className={styles.wiltedOverlay}>
+                    <span className={styles.wiltedLabel}>wilted</span>
+                    <button
+                        className={styles.replantBtn}
+                        onClick={handleReplant}
+                    >
+                        Replant
+                    </button>
+                </div>
             )}
 
             {plot.cropType && !plot.wilted && (
@@ -136,6 +162,15 @@ export default function PlotTile({ plot }) {
 
                     {plot.timerSeconds != null && (
                         <span className={styles.timer}>{plot.timerSeconds}s</span>
+                    )}
+
+                    {plot.chombId && plot.timerSeconds != null && plot.timerSeconds > 10 && (
+                        <button
+                            className={styles.harvestBtn}
+                            onClick={handleHarvest}
+                        >
+                            Harvest
+                        </button>
                     )}
                 </div>
             )}
