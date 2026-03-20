@@ -1,8 +1,7 @@
 import { useFarm } from "../FarmContext";
 import { CHOMB_CATALOG } from "../data/chombs";
+import ChombSprite from "./ChombSprite";
 import styles from "./ChombRoster.module.css";
-
-const CHOMB_STATE_EMOJI = { idle: "😴", working: "🐛" };
 
 const ROLE_LABEL = {
     fertilizer: { label: "Fertilizer", color: "#8b6530" },
@@ -12,10 +11,7 @@ const ROLE_LABEL = {
 
 function ChombCard({ chomb }) {
     const busy = chomb.busy;
-    const catalogEntry = CHOMB_CATALOG.find((c) => c.catalogKey === chomb.catalogKey);
-    const typeEmoji  = catalogEntry?.emoji ?? "🐾";
-    const chombState = busy ? "working" : "idle";
-    const roleInfo   = ROLE_LABEL[chomb.role] ?? { label: chomb.role, color: "#666" };
+    const roleInfo = ROLE_LABEL[chomb.role] ?? { label: chomb.role, color: "#666" };
 
     function handleDragStart(e) {
         e.dataTransfer.setData("chombId", String(chomb.id));
@@ -29,20 +25,21 @@ function ChombCard({ chomb }) {
             onDragStart={!busy ? handleDragStart : undefined}
             aria-disabled={busy}
         >
-            <div className={styles.cardHeader}>
-                <div className={styles.sprite} data-state={chombState}>
-                    <span className={styles.spriteEmoji}>{typeEmoji}</span>
-                </div>
-                <span className={styles.stateEmoji}>{CHOMB_STATE_EMOJI[chombState]}</span>
+            {/* Animated sprite */}
+            <div className={styles.spriteSlot}>
+                <ChombSprite catalogKey={chomb.catalogKey} busy={busy} size={48} />
             </div>
-            <span className={styles.name}>{chomb.name}</span>
-            <span
-                className={styles.roleBadge}
-                style={{ backgroundColor: roleInfo.color }}
-            >
-                {roleInfo.label}
-            </span>
-            {busy && <span className={styles.busyBadge}>working…</span>}
+
+            <div className={styles.info}>
+                <span className={styles.name}>{chomb.name}</span>
+                <span
+                    className={styles.roleBadge}
+                    style={{ backgroundColor: roleInfo.color }}
+                >
+                    {roleInfo.label}
+                </span>
+                {busy && <span className={styles.busyBadge}>working…</span>}
+            </div>
         </div>
     );
 }
