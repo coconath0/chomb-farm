@@ -1,10 +1,12 @@
+import { CHOMB_CATALOG } from "./data/chombs";
+
 // ---------------------------------------------------------------------------
 // Shape
 //   state: { seeds: number, plots: Plot[], chombRoster: Chomb[] }
 //
 //   Plot  : { id: number, cropType: string|null, chombId: number|null,
 //             timerSeconds: number|null, wilted: boolean }
-//   Chomb : { id: number, name: string, specialty: string, level: number, busy: boolean }
+//   Chomb : { id: number, catalogKey: string, name: string, specialty: string, level: number, busy: boolean }
 // ---------------------------------------------------------------------------
 
 // Initial state 
@@ -21,9 +23,9 @@ export const initialState = {
     seeds: 10,
     plots: Array.from({ length: 9 }, (_, i) => makePlot(i + 1)),
     chombRoster: [
-        { id: 1, name: "Biscuit", specialty: "Watering",   level: 1, busy: false },
-        { id: 2, name: "Mochi",   specialty: "Harvesting",  level: 1, busy: false },
-        { id: 3, name: "Sprout", specialty: "Fertilizing", level: 1, busy: false },
+        { id: 1, catalogKey: "biscuit", name: "Biscuit", specialty: "Watering",    level: 1, busy: false },
+        { id: 2, catalogKey: "mochi",   name: "Mochi",   specialty: "Harvesting",  level: 1, busy: false },
+        { id: 3, catalogKey: "sprout",  name: "Sprout",  specialty: "Fertilizing", level: 1, busy: false },
     ],
 };
 
@@ -35,6 +37,7 @@ export const HARVEST_PLOT   = "HARVEST_PLOT";   // { plotId, seedReward }
 export const WILT_PLOT      = "WILT_PLOT";      // { plotId }
 export const TICK_PLOT      = "TICK_PLOT";      // { plotId }
 export const REPLANT_PLOT   = "REPLANT_PLOT";   // { plotId }
+export const UNLOCK_CHOMB   = "UNLOCK_CHOMB";   // { catalogKey }
 export const EARN_SEEDS     = "EARN_SEEDS";     // { amount }
 export const ADD_CROP       = "ADD_CROP";       // { plotId, cropType, timerSeconds }
 
@@ -194,6 +197,38 @@ export function farmReducer(state, action) {
                     timerSeconds,
                     wilted: false,
                 }),
+            };
+        }
+
+        // Buy a new Chomb from the catalog; deducts seeds
+        case UNLOCK_CHOMB: {
+            const { catalogKey } = action.payload;
+            const entry = CHOMB_CATALOG.find((c) => c.catalogKey === catalogKey);
+            if (!entry) return state;
+
+            // Already owned guard
+            if (state.chombRoster.some((c) => c.catalogKey === catalogKey)) return state;
+
+            // Insufficient seeds guard
+            if (state.seeds < entry.cost) return state;
+
+            const nextId =
+                state.chombRoster.reduce((max, c) => Math.max(max, c.id), 0) + 1;
+
+            return {
+                ...state,
+                seeds: state.seeds - entry.cost,
+                chombRoster: [
+                    ...state.chombRoster,
+                    {
+                        id: nextId,
+                        catalogKey: entry.catalogKey,
+                        name: entry.name,
+                        specialty: entry.specialty,
+                        level: entry.level,
+                        busy: false,
+                    },
+                ],
             };
         }
 
