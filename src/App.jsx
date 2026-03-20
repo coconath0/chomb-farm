@@ -7,7 +7,6 @@ import HUD from './components/HUD'
 function App() {
   return (
     <main className={styles.app}>
-      <h1 className={styles.title}>Chomb Farm</h1>
       <HUD />
       <div className={styles.layout}>
         <FarmGrid />
