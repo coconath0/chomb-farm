@@ -78,3 +78,31 @@
     min-width: 2ch;
     text-align: right;
 }
+
+.resetBtn {
+    background: #7a3a1e;
+    border: 2px solid #3b2f1e;
+    box-shadow: 0 2px 0 #3b2f1e;
+    border-radius: 3px;
+    color: #f5e6c8;
+    font-size: 1rem;
+    line-height: 1;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: filter 0.1s, transform 0.1s;
+}
+
+.resetBtn:hover {
+    filter: brightness(1.2);
+    transform: translateY(-1px);
+}
+
+.resetBtn:active {
+    transform: translateY(1px);
+    box-shadow: none;
+}

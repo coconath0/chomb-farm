@@ -72,6 +72,7 @@ export const START_WATER     = "START_WATER";     // { plotId, chombId }
 export const START_HARVEST   = "START_HARVEST";   // { plotId, chombId }
 export const UNLOCK_CHOMB    = "UNLOCK_CHOMB";    // { catalogKey }
 export const EARN_SEEDS      = "EARN_SEEDS";      // { amount }
+export const RESET_STATE     = "RESET_STATE";     // {}
 
 // Helpers
 
@@ -274,6 +275,9 @@ export function farmReducer(state, action) {
 
         default:
             return state;
+
+        case RESET_STATE:
+            return initialState;
     }
 }
 

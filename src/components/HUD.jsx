@@ -2,7 +2,13 @@ import { useFarm } from "../FarmContext";
 import styles from "./HUD.module.css";
 
 export default function HUD() {
-    const { state } = useFarm();
+    const { state, resetGame } = useFarm();
+
+    function handleReset() {
+        if (window.confirm("Reset the game? All progress will be lost.")) {
+            resetGame();
+        }
+    }
 
     return (
         <header className={styles.hud}>
@@ -18,6 +24,10 @@ export default function HUD() {
                 <div className={styles.coinIcon} aria-hidden="true" />
                 <span className={styles.seedCount}>{state.seeds}</span>
             </div>
+
+            <button className={styles.resetBtn} onClick={handleReset} title="Reset game">
+                ↺
+            </button>
         </header>
     );
 }
