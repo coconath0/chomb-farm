@@ -1,6 +1,7 @@
 import { useFarm } from "../FarmContext";
 import { UNLOCK_CHOMB } from "../farmReducer";
 import { CHOMB_CATALOG } from "../data/chombs";
+import ChombSprite from "./ChombSprite";
 import styles from "./ChombShop.module.css";
 
 const ROLE_LABEL = {
@@ -14,7 +15,6 @@ export default function ChombShop() {
 
     const unlockedKeys = new Set(state.chombRoster.map((c) => c.catalogKey));
 
-    // Only show Chombs that aren't already owned and have a cost > 0
     const shopEntries = CHOMB_CATALOG.filter(
         (entry) => entry.cost > 0 && !unlockedKeys.has(entry.catalogKey)
     );
@@ -25,18 +25,18 @@ export default function ChombShop() {
 
     return (
         <aside className={styles.shop}>
-            <h2 className={styles.heading}>Chomb Shop</h2>
+            <h2 className={styles.heading}>Shop Chombs</h2>
 
             {shopEntries.length === 0 ? (
-                <p className={styles.empty}>All Chombs unlocked! 🎉</p>
+                <p className={styles.empty}>All unlocked!</p>
             ) : (
                 <ul className={styles.list}>
                     {shopEntries.map((entry) => {
                         const canAfford = state.seeds >= entry.cost;
                         return (
                             <li key={entry.catalogKey} className={styles.entry}>
-                                <div className={styles.sprite} data-state="shop">
-                                    <span className={styles.spriteEmoji}>{entry.emoji}</span>
+                                <div className={styles.spriteSlot}>
+                                    <ChombSprite catalogKey={entry.catalogKey} busy={false} size={40} />
                                 </div>
                                 <div className={styles.info}>
                                     <span className={styles.name}>{entry.name}</span>
@@ -46,7 +46,6 @@ export default function ChombShop() {
                                     >
                                         {(ROLE_LABEL[entry.role] ?? { label: entry.role }).label}
                                     </span>
-                                    <span className={styles.level}>Lv. {entry.level}</span>
                                 </div>
                                 <button
                                     className={`${styles.buyBtn} ${!canAfford ? styles.disabled : ""}`}
@@ -54,7 +53,7 @@ export default function ChombShop() {
                                     disabled={!canAfford}
                                     aria-label={`Buy ${entry.name} for ${entry.cost} seeds`}
                                 >
-                                    🌱 {entry.cost}
+                                    🌱{entry.cost}
                                 </button>
                             </li>
                         );

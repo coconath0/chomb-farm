@@ -1,17 +1,27 @@
+/* Roster panel - wooden box */
 .roster {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    width: 160px;
+    gap: 8px;
+    background: #f3e5c2;
+    border: 3px solid #3b2f1e;
+    box-shadow:
+        inset 0 0 0 2px #deb887,
+        0 4px 0 #3b2f1e;
+    border-radius: 4px;
+    padding: 10px 8px;
+    width: 176px;
     flex-shrink: 0;
+    box-sizing: border-box;
 }
 
 .heading {
-    font-size: 1.1rem;
-    font-weight: 700;
+    font-size: 0.85rem;
     color: #3b2f1e;
-    margin: 0;
     text-align: center;
+    margin: 0;
+    letter-spacing: 0.06em;
+    text-shadow: 1px 1px 0 #deb887;
 }
 
 .list {
@@ -20,95 +30,109 @@
     padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
 }
 
-/* Chomb card */
+/* Horizontal scroll variant used in mobile roster strip */
+.listHorizontal {
+    flex-direction: row;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
+}
 
+.listHorizontal li {
+    flex-shrink: 0;
+}
+
+.rosterHorizontal {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Chomb card ─ inventory slot style */
 .card {
-    background-color: #f5e6c8;
-    border: 2px solid #b8882e;
-    border-radius: 8px;
-    padding: 10px 12px;
     display: flex;
-    flex-direction: column;
-    gap: 3px;
+    align-items: center;
+    gap: 8px;
+    background: #e8cfa6;
+    border: 2px solid #3b2f1e;
+    box-shadow:
+        inset 0 0 0 1px #c8892e,
+        0 2px 0 #3b2f1e;
+    border-radius: 4px;
+    padding: 5px 7px;
     cursor: grab;
-    transition: transform 0.1s, box-shadow 0.1s, opacity 0.2s;
+    transition: filter 0.1s, transform 0.1s;
     user-select: none;
 }
 
-.card:not(.busy):hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+.card:hover:not(.busy) {
+    filter: brightness(1.08);
+    transform: translateY(-1px);
 }
 
-.card:not(.busy):active {
-    cursor: grabbing;
+.card:active:not(.busy) {
+    transform: translateY(1px);
+    box-shadow: inset 0 0 0 1px #c8892e;
 }
 
-/* Busy / assigned state */
+.selected {
+    outline: 2px solid #f5c842;
+    outline-offset: 1px;
+    box-shadow:
+        inset 0 0 0 1px #c8892e,
+        0 2px 0 #3b2f1e,
+        0 0 0 3px #f5c842;
+}
+
 .busy {
-    opacity: 0.5;
+    opacity: 0.6;
     cursor: not-allowed;
+    filter: grayscale(0.2);
+}
+
+/* Sprite slot inside card */
+.spriteSlot {
+    width: 48px;
+    height: 48px;
+    background: rgba(0,0,0,0.06);
+    border: 1px solid rgba(0,0,0,0.15);
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+/* Info block */
+.info {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
 }
 
 .name {
-    font-size: 0.85rem;
-    font-weight: 700;
+    font-size: 0.75rem;
     color: #3b2f1e;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.specialty {
-    font-size: 0.7rem;
-    color: #7a5230;
-    text-transform: uppercase;
+.roleBadge {
+    display: inline-block;
+    font-size: 0.5rem;
+    color: #fff;
+    padding: 1px 5px;
+    border-radius: 8px;
     letter-spacing: 0.04em;
 }
 
 .busyBadge {
-    font-size: 0.65rem;
-    color: #9e7040;
-    font-style: italic;
-    margin-top: 2px;
-}
-
-/* Sprite placeholders - data-state: "idle" | "working" */
-.sprite {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 28px;
-    height: 28px;
-    flex-shrink: 0;
-}
-
-.spriteEmoji {
-    font-size: 1.3rem;
-    line-height: 1;
-    user-select: none;
-}
-
-.cardHeader {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    margin-bottom: 2px;
-}
-
-.stateEmoji {
-    font-size: 0.9rem;
-}
-
-/* Role badge */
-.roleBadge {
-    display: inline-block;
-    font-size: 0.6rem;
-    font-weight: 700;
-    color: #fff;
-    padding: 1px 6px;
-    border-radius: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-top: 1px;
+    font-size: 0.5rem;
+    color: #7a5230;
+    opacity: 0.85;
 }

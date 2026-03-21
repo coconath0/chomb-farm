@@ -1,6 +1,15 @@
+/* Raised wooden-frame island around the farm plots */
 .grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
+    gap: 8px;
     width: min(420px, 90vw);
+    background: #c4965a;
+    border: 4px solid #3b2f1e;
+    box-shadow:
+        inset 0 0 0 2px #deb887,
+        0 5px 0 #3b2f1e;
+    border-radius: 6px;
+    padding: 10px;
+    box-sizing: border-box;
 }

@@ -28,8 +28,16 @@ export const PHASE_TIMERS = {
     harvesting:  4,
 };
 
+// Growing time (seconds) per crop — replaces the shared PHASE_TIMERS.growing
+export const CROP_GROWING_TIMES = {
+    carrot: 20,
+    wheat:  25,
+    corn:   30,
+    tomato: 40,
+};
+
 // Seed yield per crop on a successful harvest
-const CROP_SEEDS = {
+export const CROP_SEEDS = {
     carrot: 5,
     wheat:  8,
     corn:   12,
@@ -64,6 +72,7 @@ export const START_WATER     = "START_WATER";     // { plotId, chombId }
 export const START_HARVEST   = "START_HARVEST";   // { plotId, chombId }
 export const UNLOCK_CHOMB    = "UNLOCK_CHOMB";    // { catalogKey }
 export const EARN_SEEDS      = "EARN_SEEDS";      // { amount }
+export const RESET_STATE     = "RESET_STATE";     // {}
 
 // Helpers
 
@@ -173,12 +182,13 @@ export function farmReducer(state, action) {
                 }
                 case "watering": {
                     const freed = plot.chombId;
+                    const growTime = CROP_GROWING_TIMES[plot.cropType?.toLowerCase()] ?? PHASE_TIMERS.growing;
                     return {
                         ...state,
                         plots: updatePlot(state.plots, plotId, {
                             phase: "growing",
                             chombId: null,
-                            timerSeconds: PHASE_TIMERS.growing,
+                            timerSeconds: growTime,
                         }),
                         chombRoster: freed
                             ? updateChomb(state.chombRoster, freed, { busy: false })
@@ -265,6 +275,9 @@ export function farmReducer(state, action) {
 
         default:
             return state;
+
+        case RESET_STATE:
+            return initialState;
     }
 }
 

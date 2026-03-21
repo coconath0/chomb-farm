@@ -1,40 +1,79 @@
+/* Base plot tile - matches Tilled Dirt tileset palette */
 .tile {
     width: 100%;
     aspect-ratio: 1;
-    background-color: #c4965a;
-    border: 3px solid #7a5230;
-    border-radius: 6px;
+    /* Show the single rounded-corner tile at (col=1, row=7) in Tilled Dirt.png.
+       The sheet is 8×8 tiles (128×128px). background-size:800% scales so each
+       16px tile fills 100% of the element. Position uses the CSS % formula:
+       x = col/(cols-1)*100 = 1/7 ≈ 14.286%, y = row/(rows-1)*100 = 7/7 = 100% */
+    background-color: #e8cfa6;
+    background-image: url('/sprites/tiles/Tilesets/Tilled-Dirt.png');
+    background-size: 450% 450%;
+    background-repeat: no-repeat;
+    background-position: 26% 58%;
+    image-rendering: pixelated;
+    /* Pixel-art border: 3px dark outline + 1px inner highlight */
+    border: 3px solid #3b2f1e;
+    box-shadow:
+        inset 0 0 0 1px #c8892e,
+        0 3px 0 #3b2f1e;
+    border-radius: 4px;
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
     cursor: default;
     box-sizing: border-box;
-    transition: background-color 0.2s;
+    overflow: hidden;
+    transition: filter 0.15s;
 }
 
 .tile:hover {
-    filter: brightness(1.08);
+    filter: brightness(1.06);
 }
 
-/* Phase-based tile states */
+/* Pulse highlight when a compatible selected Chomb can be placed here */
+.tapTarget {
+    outline: 2px solid #f5c842;
+    outline-offset: 2px;
+    animation: tapPulse 0.8s ease-in-out infinite alternate;
+}
 
-/* fertilizing / fertilized */
+@keyframes tapPulse {
+    from { outline-color: #f5c842; }
+    to   { outline-color: #e07c10; }
+}
+
+/* Phase colour overlay via ::before pseudo-element */
+.tile::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: var(--phase-tint, transparent);
+    mix-blend-mode: multiply;
+    transition: background 0.3s;
+}
+
+/* fertilizing / fertilized \u2013 darker brown tint */
 .fertile {
-    background-color: #8b6530;
+    --phase-tint: rgba(100, 60, 10, 0.25);
     border-color: #5c3d18;
+    box-shadow: inset 0 0 0 1px #9b7b4a, 0 3px 0 #3b2f1e;
 }
 
-/* needs_water / watering / growing */
+/* needs_water / watering / growing \u2013 cool blue-green tint */
 .planted {
-    background-color: #78b86a;
+    --phase-tint: rgba(40, 140, 80, 0.22);
     border-color: #3e7a30;
+    box-shadow: inset 0 0 0 1px #5a9e40, 0 3px 0 #3b2f1e;
 }
 
-/* ready / harvesting */
+/* ready / harvesting \u2013 golden tint */
 .readyPhase {
-    background-color: #e8c840;
+    --phase-tint: rgba(220, 180, 0, 0.28);
     border-color: #a88c10;
+    box-shadow: inset 0 0 0 1px #d4b820, 0 3px 0 #3b2f1e;
 }
 
 /* Labels */
@@ -55,9 +94,11 @@
     opacity: 0.7;
 }
 
-/* Occupied content */
+/* Occupied content (stacked inside tile) */
 
 .content {
+    position: relative; /* sit above the ::before overlay */
+    z-index: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -68,14 +109,15 @@
 }
 
 .cropName {
-    font-size: 0.75rem;
+    font-size: 0.65rem;
     font-weight: 700;
     color: #1e3a14;
     text-transform: capitalize;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.6);
 }
 
 .chombName {
-    font-size: 0.65rem;
+    font-size: 0.6rem;
     color: #2b4d1f;
 }
 
@@ -83,55 +125,52 @@
 
 .progressTrack {
     width: 80%;
-    height: 6px;
-    background-color: rgba(0, 0, 0, 0.2);
-    border-radius: 3px;
+    height: 5px;
+    background-color: rgba(0, 0, 0, 0.25);
+    border-radius: 2px;
     overflow: hidden;
+    border: 1px solid rgba(0,0,0,0.3);
 }
 
 .progressFill {
     height: 100%;
     background-color: #f5d04a;
-    border-radius: 3px;
+    border-radius: 2px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.5);
     transition: width 0.4s linear;
 }
 
 .timer {
-    font-size: 0.6rem;
+    font-size: 0.55rem;
     color: #2b4d1f;
-    opacity: 0.8;
+    opacity: 0.85;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.5);
 }
 
 /* Drag-over highlight */
 .dragOver {
     outline: 3px dashed #f5d04a;
-    outline-offset: -3px;
+    outline-offset: -4px;
     filter: brightness(1.15);
 }
 
-/* ── Sprite placeholders ──────────────────────────────────────
-   On Prompt 10, swap spriteEmoji content for real background-image
-   sprites. The .sprite wrapper and data-state attribute stay unchanged.
-   ──────────────────────────────────────────────────────────── */
+/* Sprite placeholders */
 .sprite {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
+    width: 48px;
+    height: 48px;
     flex-shrink: 0;
-    /* future: background-image: url(...);
-              background-size: contain;
-              background-repeat: no-repeat; */
+    filter: drop-shadow(0 1px 0 rgba(255,255,255,0.5));
 }
 
 .spriteEmoji {
-    font-size: 1.5rem;
+    font-size: 1.6rem;
     line-height: 1;
     user-select: none;
 }
 
-/* Side-by-side crop + chomb sprites */
 .spriteRow {
     display: flex;
     align-items: center;
@@ -141,6 +180,8 @@
 
 /* Wilted overlay */
 .wiltedOverlay {
+    position: relative;
+    z-index: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -154,12 +195,14 @@
 .harvestBtn {
     margin-top: 2px;
     padding: 3px 10px;
-    font-size: 0.65rem;
+    font-family: inherit;
+    font-size: 0.6rem;
     font-weight: 700;
     color: #1e3a14;
     background-color: #f5d04a;
-    border: 2px solid #b89820;
-    border-radius: 4px;
+    border: 2px solid #3b2f1e;
+    box-shadow: 0 2px 0 #3b2f1e;
+    border-radius: 3px;
     cursor: pointer;
     transition: filter 0.1s, transform 0.1s;
 }
@@ -170,18 +213,21 @@
 }
 
 .harvestBtn:active {
-    transform: translateY(0);
+    transform: translateY(1px);
+    box-shadow: none;
 }
 
 /* Replant button */
 .replantBtn {
     padding: 3px 10px;
-    font-size: 0.65rem;
+    font-family: inherit;
+    font-size: 0.6rem;
     font-weight: 700;
     color: #f5e6c8;
     background-color: #7a5230;
     border: 2px solid #3b2f1e;
-    border-radius: 4px;
+    box-shadow: 0 2px 0 #3b2f1e;
+    border-radius: 3px;
     cursor: pointer;
     transition: filter 0.1s, transform 0.1s;
 }
@@ -192,11 +238,14 @@
 }
 
 .replantBtn:active {
-    transform: translateY(0);
+    transform: translateY(1px);
+    box-shadow: none;
 }
 
-/* Empty plot — plant UI */
+/* Empty plot / crop picker */
 .emptyContent {
+    position: relative;
+    z-index: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -208,12 +257,14 @@
 
 .plantBtn {
     padding: 3px 10px;
-    font-size: 0.65rem;
+    font-family: inherit;
+    font-size: 0.6rem;
     font-weight: 700;
     color: #6b4422;
     background-color: #e8c98a;
-    border: 2px solid #a0722a;
-    border-radius: 4px;
+    border: 2px solid #3b2f1e;
+    box-shadow: 0 2px 0 #3b2f1e;
+    border-radius: 3px;
     cursor: pointer;
     transition: filter 0.1s, transform 0.1s;
 }
@@ -223,7 +274,6 @@
     transform: translateY(-1px);
 }
 
-/* Crop picker overlay */
 .cropPicker {
     display: flex;
     flex-wrap: wrap;
@@ -233,30 +283,39 @@
 }
 
 .cropOption {
-    padding: 2px 6px;
-    font-size: 0.6rem;
+    padding: 2px 5px;
+    font-family: inherit;
+    font-size: 0.55rem;
     font-weight: 700;
     color: #1e3a14;
     background-color: #aee887;
-    border: 1px solid #3e7a30;
-    border-radius: 4px;
+    border: 2px solid #3b2f1e;
+    box-shadow: 0 2px 0 #3b2f1e;
+    border-radius: 3px;
     cursor: pointer;
     text-transform: capitalize;
-    transition: filter 0.1s;
+    transition: filter 0.1s, transform 0.1s;
 }
 
 .cropOption:hover {
     filter: brightness(1.12);
+    transform: translateY(-1px);
+}
+
+.cropOption:active {
+    transform: translateY(1px);
+    box-shadow: none;
 }
 
 .cropCancel {
     padding: 2px 6px;
-    font-size: 0.6rem;
+    font-family: inherit;
+    font-size: 0.55rem;
     font-weight: 700;
     color: #6b2222;
     background: none;
     border: 1px solid #a04040;
-    border-radius: 4px;
+    border-radius: 3px;
     cursor: pointer;
     transition: filter 0.1s;
 }
@@ -267,10 +326,12 @@
 
 /* Phase hint text */
 .hint {
-    font-size: 0.6rem;
-    color: rgba(30, 20, 5, 0.65);
+    font-size: 0.55rem;
+    color: #3b2f1e;
     text-align: center;
-    line-height: 1.2;
+    line-height: 1.3;
     max-width: 100%;
     word-break: break-word;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.5);
+    opacity: 0.85;
 }

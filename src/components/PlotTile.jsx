@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import { useFarm } from "../FarmContext";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
+import { useSelection } from "../SelectionContext";
 import {
     COMPLETE_PHASE,
     PHASE_TIMERS,
@@ -9,18 +9,18 @@ import {
     START_WATER,
     TICK_PLOT,
 } from "../farmReducer";
-import { CHOMB_CATALOG } from "../data/chombs";
+import ChombSprite from "./ChombSprite";
 import styles from "./PlotTile.module.css";
 
 const PLANTABLE_CROPS = ["carrot", "corn", "wheat", "tomato"];
 
 // Visual emoji per phase
 const PHASE_EMOJI = {
-    empty:       "🟫",
-    fertilizing: "🟫",
-    fertilized:  "🟤",
-    needs_water: "🌱",
-    watering:    "🌱",
+    empty:       "🪹",
+    fertilizing: "🔄",
+    fertilized:  " ",
+    needs_water: "💧",
+    watering:    "👩🏻‍🌾",
     growing:     "🌱",
     ready:       "🌾",
     harvesting:  "🌾",
@@ -45,8 +45,12 @@ const PHASE_HINT = {
     harvesting:  "Harvesting…",
 };
 
-export default function PlotTile({ plot }) {
-    const { state, dispatch } = useFarm();
+// PlotTile is memoized so it only re-renders when its own `plot` prop changes.
+// useFarm() was intentionally removed — chombRoster and dispatch are passed as
+// props from FarmGrid. TICK_PLOT never mutates chombRoster, so the reference
+// is stable between ticks and React.memo can skip the 8 idle tiles.
+const PlotTile = memo(function PlotTile({ plot, chombRoster, dispatch }) {
+    const { selectedChombId, setSelectedChombId } = useSelection();
     const [isDragOver, setIsDragOver] = useState(false);
 
     // Ref so the interval callback always reads the latest timerSeconds
@@ -77,29 +81,13 @@ export default function PlotTile({ plot }) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [plot.phase, plot.chombId, plot.id, dispatch]);
 
-    function handleDragOver(e) {
-        if (!PHASE_REQUIRED_ROLE[plot.phase]) return;
-        e.preventDefault();
-        e.dataTransfer.dropEffect = "move";
-        setIsDragOver(true);
-    }
-
-    function handleDragLeave() {
-        setIsDragOver(false);
-    }
-
-    function handleDrop(e) {
-        e.preventDefault();
-        setIsDragOver(false);
-
+    const assignChomb = useCallback((chombId) => {
         const requiredRole = PHASE_REQUIRED_ROLE[plot.phase];
         if (!requiredRole) return;
-
-        const chombId = parseInt(e.dataTransfer.getData("chombId"), 10);
-        if (!chombId) return;
-
-        const chomb = state.chombRoster.find((c) => c.id === chombId);
+        const chomb = chombRoster.find((c) => c.id === chombId);
         if (!chomb || chomb.busy || chomb.role !== requiredRole) return;
+
+        setSelectedChombId(null);
 
         if (plot.phase === "empty") {
             dispatch({ type: START_FERTILIZE, payload: { plotId: plot.id, chombId } });
@@ -108,10 +96,41 @@ export default function PlotTile({ plot }) {
         } else if (plot.phase === "ready") {
             dispatch({ type: START_HARVEST, payload: { plotId: plot.id, chombId } });
         }
-    }
+    }, [plot.phase, plot.id, chombRoster, dispatch, setSelectedChombId]);
 
-    const activeChomb   = plot.chombId ? state.chombRoster.find((c) => c.id === plot.chombId) : null;
-    const activeCatalog = activeChomb   ? CHOMB_CATALOG.find((c) => c.catalogKey === activeChomb.catalogKey) : null;
+    const handleDragOver = useCallback((e) => {
+        if (!PHASE_REQUIRED_ROLE[plot.phase]) return;
+        e.preventDefault();
+        e.dataTransfer.dropEffect = "move";
+        setIsDragOver(true);
+    }, [plot.phase]);
+
+    const handleDragLeave = useCallback(() => {
+        setIsDragOver(false);
+    }, []);
+
+    const handleDrop = useCallback((e) => {
+        e.preventDefault();
+        setIsDragOver(false);
+        const requiredRole = PHASE_REQUIRED_ROLE[plot.phase];
+        if (!requiredRole) return;
+        const chombId = parseInt(e.dataTransfer.getData("chombId"), 10);
+        if (!chombId) return;
+        assignChomb(chombId);
+    }, [plot.phase, assignChomb]);
+
+    const handleClick = useCallback(() => {
+        if (!selectedChombId) return;
+        const requiredRole = PHASE_REQUIRED_ROLE[plot.phase];
+        if (!requiredRole) return;
+        assignChomb(selectedChombId);
+    }, [selectedChombId, plot.phase, assignChomb]);
+
+    const handlePlant = useCallback((e) => {
+        dispatch({ type: PLANT, payload: { plotId: plot.id, cropType: e.currentTarget.dataset.crop } });
+    }, [dispatch, plot.id]);
+
+    const activeChomb = plot.chombId ? chombRoster.find((c) => c.id === plot.chombId) : null;
 
     const timerMax  = PHASE_TIMERS[plot.phase] ?? null;
     const progress  = plot.timerSeconds != null && timerMax
@@ -124,10 +143,20 @@ export default function PlotTile({ plot }) {
     else if (["needs_water", "watering", "growing"].includes(plot.phase)) phaseClass = styles.planted;
     else if (["ready", "harvesting"].includes(plot.phase))                phaseClass = styles.readyPhase;
 
+    const canAcceptSelected = selectedChombId
+        ? (() => {
+            const requiredRole = PHASE_REQUIRED_ROLE[plot.phase];
+            if (!requiredRole) return false;
+            const sc = chombRoster.find((c) => c.id === selectedChombId);
+            return sc && !sc.busy && sc.role === requiredRole;
+          })()
+        : false;
+
     const tileClass = [
         styles.tile,
         phaseClass,
         isDragOver && PHASE_REQUIRED_ROLE[plot.phase] ? styles.dragOver : "",
+        canAcceptSelected ? styles.tapTarget : "",
     ].filter(Boolean).join(" ");
 
     return (
@@ -137,18 +166,20 @@ export default function PlotTile({ plot }) {
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
+            onClick={handleClick}
         >
             <div className={styles.content}>
-                {/* Sprites */}
+                {/* Sprites — show ChombSprite when working, emoji otherwise */}
                 <div className={styles.spriteRow}>
-                    <div className={styles.sprite} data-state={plot.phase}>
-                        <span className={styles.spriteEmoji}>{PHASE_EMOJI[plot.phase]}</span>
-                    </div>
-                    {activeChomb && (
-                        <div className={styles.sprite} data-state="working">
-                            <span className={styles.spriteEmoji}>
-                                {activeCatalog?.emoji ?? "🐾"}
-                            </span>
+                    {activeChomb ? (
+                        <ChombSprite
+                            catalogKey={activeChomb.catalogKey}
+                            busy={true}
+                            size={48}
+                        />
+                    ) : (
+                        <div className={styles.sprite} data-state={plot.phase}>
+                            <span className={styles.spriteEmoji}>{PHASE_EMOJI[plot.phase]}</span>
                         </div>
                     )}
                 </div>
@@ -164,13 +195,9 @@ export default function PlotTile({ plot }) {
                         {PLANTABLE_CROPS.map((crop) => (
                             <button
                                 key={crop}
+                                data-crop={crop}
                                 className={styles.cropOption}
-                                onClick={() =>
-                                    dispatch({
-                                        type: PLANT,
-                                        payload: { plotId: plot.id, cropType: crop },
-                                    })
-                                }
+                                onClick={handlePlant}
                             >
                                 {crop}
                             </button>
@@ -198,5 +225,6 @@ export default function PlotTile({ plot }) {
             </div>
         </div>
     );
-}
+});
 
+export default PlotTile;

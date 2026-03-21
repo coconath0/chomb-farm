@@ -1,0 +1,14 @@
+.wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+}
+
+.sprite {
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    display: block;
+}
