@@ -107,6 +107,29 @@
     box-shadow: none;
 }
 
+/* Help / Starter Guide button */
+.helpBtn {
+    background: #3a6e8a;
+    border: 2px solid #3b2f1e;
+    box-shadow: 0 2px 0 #3b2f1e;
+    border-radius: 3px;
+    color: #f5e6c8;
+    font-size: 1rem;
+    font-weight: bold;
+    line-height: 1;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: filter 0.1s, transform 0.1s;
+}
+
+.helpBtn:hover  { filter: brightness(1.2); transform: translateY(-1px); }
+.helpBtn:active { transform: translateY(1px); box-shadow: none; }
+
 /* ── Reset-confirm dialog ───────────────────────────────────── */
 .overlay {
     position: fixed;
@@ -178,4 +201,93 @@
 .dialogBtnNo {
     background: #deb887;
     color: #3b2f1e;
+}
+
+/* ── Starter Guide dialog ───────────────────────────────────── */
+.guide {
+    background: #f3e5c2;
+    border: 4px solid #3b2f1e;
+    box-shadow:
+        inset 0 0 0 2px #deb887,
+        0 6px 0 #3b2f1e,
+        0 8px 24px rgba(0,0,0,0.5);
+    border-radius: 4px;
+    padding: 20px 24px 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    width: min(420px, 90vw);
+    max-height: 80vh;
+    box-sizing: border-box;
+}
+
+.guideTitle {
+    margin: 0;
+    font-size: 1rem;
+    color: #3b2f1e;
+    letter-spacing: 0.1em;
+    text-shadow: 1px 1px 0 #deb887;
+    text-align: center;
+}
+
+/* Scrollable content area */
+.guideScroll {
+    width: 100%;
+    overflow-y: auto;
+    max-height: 52vh;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding-right: 4px;
+    /* pixel-art style scrollbar */
+    scrollbar-width: thin;
+    scrollbar-color: #7a5c30 #deb887;
+}
+
+.guideScroll::-webkit-scrollbar       { width: 6px; }
+.guideScroll::-webkit-scrollbar-track  { background: #deb887; border-radius: 2px; }
+.guideScroll::-webkit-scrollbar-thumb  { background: #7a5c30; border-radius: 2px; }
+
+.guideSection {
+    margin: 8px 0 2px;
+    font-size: 0.78rem;
+    color: #3b2f1e;
+    letter-spacing: 0.07em;
+    text-shadow: 1px 1px 0 #deb887;
+}
+
+.guideBody {
+    margin: 0 0 4px;
+    font-size: 0.68rem;
+    color: #5a3e20;
+    line-height: 1.7;
+    letter-spacing: 0.03em;
+}
+
+.guideStep {
+    display: block;
+    margin-top: 3px;
+    background: #deb887;
+    border: 2px solid #3b2f1e;
+    border-radius: 3px;
+    padding: 4px 8px;
+    text-align: center;
+    color: #3b2f1e;
+    font-size: 0.65rem;
+    letter-spacing: 0.05em;
+}
+
+.guideChomb {
+    font-size: 0.7rem;
+    color: #3b2f1e;
+}
+
+.guideHint {
+    display: block;
+    margin-top: 3px;
+    font-size: 0.63rem;
+    color: #7a5c30;
+    letter-spacing: 0.04em;
+    text-align: center;
 }
