@@ -16,7 +16,7 @@ const _sortedKeys = Object.keys(data.frames).sort((a, b) => {
 const ALL_FRAMES = _sortedKeys.map((k) => data.frames[k].frame);
 
 /** Public URL of the spritesheet — import alongside the hook when needed. */
-export const SPRITE_SHEET = "public/sprites/chom-bomb/Chomb All/Chomb1.png";
+export const SPRITE_SHEET = "public/sprites/chom-bomb/chomb-all/Chomb1.png";
 
 // ---------------------------------------------------------------------------
 // useChombAnimation(animation, fps?)

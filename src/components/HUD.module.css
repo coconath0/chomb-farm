@@ -34,7 +34,7 @@
 .portraitSprite {
     width: 32px;
     height: 32px;
-    background-image: url('/sprites/chom-bomb/Chomb%20All/Chomb1.png');
+    background-image: url('/sprites/chom-bomb/chomb-all/Chomb1.png');
     background-size: 224px 512px; /* native size */
     background-position: 0 0;
     background-repeat: no-repeat;
