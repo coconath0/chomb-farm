@@ -6,14 +6,14 @@ import styles from "./ChombSprite.module.css";
 // chomp_idle.png  → 128×96  = 4 cols × 3 rows = 12 frames  (idle)
 const ANIM_SHEETS = {
     idle: {
-        src:    "/sprites/chom-bomb/Chomb%20individual/chomp_idle.png",
+        src:    "/sprites/chom-bomb/chomb-individual/chomp_idle.png",
         frames: 12,
         cols:   4,
         rows:   3,
         fps:    6,
     },
     walk: {
-        src:    "/sprites/chom-bomb/Chomb%20individual/chomb_walk.png",
+        src:    "/sprites/chom-bomb/chomb-individual/chomb_walk.png",
         frames: 18,
         cols:   6,
         rows:   3,
