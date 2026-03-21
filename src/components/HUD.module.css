@@ -106,3 +106,76 @@
     transform: translateY(1px);
     box-shadow: none;
 }
+
+/* ── Reset-confirm dialog ───────────────────────────────────── */
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(20, 12, 6, 0.65);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.dialog {
+    background: #f3e5c2;
+    border: 4px solid #3b2f1e;
+    box-shadow:
+        inset 0 0 0 2px #deb887,
+        0 6px 0 #3b2f1e,
+        0 8px 16px rgba(0,0,0,0.45);
+    border-radius: 4px;
+    padding: 24px 28px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    min-width: 220px;
+}
+
+.dialogText {
+    margin: 0;
+    font-size: 1rem;
+    color: #3b2f1e;
+    letter-spacing: 0.05em;
+    text-shadow: 1px 1px 0 #deb887;
+}
+
+.dialogSub {
+    margin: 0 0 10px;
+    font-size: 0.72rem;
+    color: #7a5c30;
+    letter-spacing: 0.04em;
+}
+
+.dialogButtons {
+    display: flex;
+    gap: 14px;
+    margin-top: 4px;
+}
+
+.dialogBtn {
+    border: 3px solid #3b2f1e;
+    border-radius: 3px;
+    font-family: inherit;
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+    padding: 6px 20px;
+    cursor: pointer;
+    box-shadow: 0 3px 0 #3b2f1e;
+    transition: filter 0.1s, transform 0.1s;
+}
+
+.dialogBtn:hover  { filter: brightness(1.15); transform: translateY(-1px); }
+.dialogBtn:active { transform: translateY(2px); box-shadow: none; }
+
+.dialogBtnYes {
+    background: #7a3a1e;
+    color: #f5e6c8;
+}
+
+.dialogBtnNo {
+    background: #deb887;
+    color: #3b2f1e;
+}
