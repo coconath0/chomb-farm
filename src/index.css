@@ -20,7 +20,7 @@ body {
   background-repeat: repeat;
   image-rendering: pixelated;
   image-rendering: crisp-edges;
-  cursor: url('/sprites/sprout-land/UI%20Sprites/Mouse%20sprites/Arrow%20Mouse%20icon%201.png') 2 2, default;
+  cursor: url('/sprites/sprout-land/ui-sprites/mouse-sprites/arrow-mouse-icon.png') 2 2, default;
 }
 
 img {

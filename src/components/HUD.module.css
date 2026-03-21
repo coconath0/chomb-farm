@@ -64,7 +64,7 @@
 .coinIcon {
     width: 16px;
     height: 16px;
-    background-image: url('/sprites/sprout-land/UI%20Sprites/Icons/special%20icons/coins.png');
+    background-image: url('/sprites/sprout-land/ui-sprites/Icons/special-icons/coins.png');
     background-size: 128px 48px; /* native */
     background-position: 0 -16px; /* row 1 = cleaner round coin */
     background-repeat: no-repeat;
