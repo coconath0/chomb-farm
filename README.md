@@ -1,6 +1,8 @@
 # 🌱 Chomb Farm
 
-![Status](https://img.shields.io/badge/status-in%20development-brightgreen?style=flat-square)
+![Status](https://img.shields.io/badge/status-complete-brightgreen?style=flat-square)
+
+🎮 **[Play Chomb Farm →](https://chomb-farm.web.app)**
 
 Chomb Farm is a cozy pixel-art farming game where you tend a 3×3 plot grid with the help of your Chomb crew - small, round, surprisingly hard-working little creatures. Each plot follows a hands-on pipeline: fertilize the soil, plant a crop, water it, watch it grow, then send in a harvester. Every Chomb has a specific role, so you'll need to coordinate your roster wisely as your farm scales up. The goal is simple: keep the fields lush, earn seeds, and maybe figure out what Chombs are actually made of.
 
@@ -37,17 +39,21 @@ Reworked core mechanic so each Chomb has a distinct role.
 - Crop picker appears after successful fertilization
 - Role badges (color-coded) on every Chomb card and shop entry
 
-### 🔄 Phase 4 - UI Polish *(currently here)*
+### ✅ Phase 4 - UI Polish
 Making the game feel alive and polished.
-- [ ] Visual tile upgrades per phase (soil texture, water shimmer, grow pulse)
-- [ ] Chomb drag-preview and hover feedback improvements
-- [ ] Animated progress bars and phase transition effects
-- [ ] Responsive layout pass - sidebar stacking on narrow viewports
-- [ ] Accessible color contrast + focus-visible states
-- [ ] General spacing, typography, and palette refinement
+- `ChombSprite` - animated idle/walk sprite component driven by per-animation PNG sheets
+- Per-Chomb color variants via CSS `hue-rotate` / `saturate` filters (no extra assets needed)
+- `SelectionContext` - click-to-select Chomb assignment as an alternative to drag & drop
+- Visual phase emoji indicators on every `PlotTile`
+- Crop-specific growing timers (`CROP_GROWING_TIMES`) and seed yields (`CROP_SEEDS`)
+- Animated progress bar on each plot during timed phases
 
-### 🔮 More phases coming…
-Chomb leveling, save/load, sound, and more - still figuring it out as it grows 🌱
+### ✅ Phase 5 - Responsive Layout & In-Game Reference
+Making the farm playable on any screen.
+- Responsive layout: desktop shows left `CropGuide` sidebar + right Chomb roster; mobile shows a horizontal scroll strip above the grid
+- `BottomNav` - fixed tabbed drawer (Shop / Guide) for mobile that slides up on demand
+- `CropGuide` - in-game reference table showing each crop's total time and seed reward
+- General spacing, typography, and palette pass across all components
 
 ---
 
