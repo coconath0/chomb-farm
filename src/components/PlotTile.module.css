@@ -1,4 +1,4 @@
-/* ── Base plot tile \u2500 matches Tilled Dirt tileset palette \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
+/* Base plot tile - matches Tilled Dirt tileset palette */
 .tile {
     width: 100%;
     aspect-ratio: 1;
@@ -44,7 +44,7 @@
     to   { outline-color: #e07c10; }
 }
 
-/* Phase colour overlay via ::before pseudo-element \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
+/* Phase colour overlay via ::before pseudo-element */
 .tile::before {
     content: '';
     position: absolute;
@@ -76,7 +76,7 @@
     box-shadow: inset 0 0 0 1px #d4b820, 0 3px 0 #3b2f1e;
 }
 
-/* ── Labels \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
+/* Labels */
 
 .emptyLabel {
     font-size: 0.65rem;
@@ -94,7 +94,7 @@
     opacity: 0.7;
 }
 
-/* ── Occupied content (stacked inside tile) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
+/* Occupied content (stacked inside tile) */
 
 .content {
     position: relative; /* sit above the ::before overlay */
@@ -121,7 +121,7 @@
     color: #2b4d1f;
 }
 
-/* ── Progress bar \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
+/* Progress bar */
 
 .progressTrack {
     width: 80%;
@@ -147,14 +147,14 @@
     text-shadow: 0 1px 0 rgba(255,255,255,0.5);
 }
 
-/* ── Drag-over highlight \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
+/* Drag-over highlight */
 .dragOver {
     outline: 3px dashed #f5d04a;
     outline-offset: -4px;
     filter: brightness(1.15);
 }
 
-/* ── Sprite placeholders \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
+/* Sprite placeholders */
 .sprite {
     display: flex;
     align-items: center;
@@ -178,7 +178,7 @@
     gap: 2px;
 }
 
-/* ── Wilted overlay \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
+/* Wilted overlay */
 .wiltedOverlay {
     position: relative;
     z-index: 1;
@@ -191,7 +191,7 @@
     box-sizing: border-box;
 }
 
-/* ── Harvest button \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
+/* Harvest button */
 .harvestBtn {
     margin-top: 2px;
     padding: 3px 10px;
@@ -217,7 +217,7 @@
     box-shadow: none;
 }
 
-/* ── Replant button \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
+/* Replant button */
 .replantBtn {
     padding: 3px 10px;
     font-family: inherit;
@@ -242,7 +242,7 @@
     box-shadow: none;
 }
 
-/* ── Empty plot / crop picker \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
+/* Empty plot / crop picker */
 .emptyContent {
     position: relative;
     z-index: 1;
@@ -324,7 +324,7 @@
     filter: brightness(1.15);
 }
 
-/* ── Phase hint text \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
+/* Phase hint text */
 .hint {
     font-size: 0.55rem;
     color: #3b2f1e;

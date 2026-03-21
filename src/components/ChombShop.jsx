@@ -25,7 +25,7 @@ export default function ChombShop() {
 
     return (
         <aside className={styles.shop}>
-            <h2 className={styles.heading}>Shop</h2>
+            <h2 className={styles.heading}>Shop Chombs</h2>
 
             {shopEntries.length === 0 ? (
                 <p className={styles.empty}>All unlocked!</p>
