@@ -1,3 +1,4 @@
+import { memo, useCallback } from "react";
 import { useFarm } from "../FarmContext";
 import { useSelection } from "../SelectionContext";
 import { CHOMB_CATALOG } from "../data/chombs";
@@ -10,23 +11,26 @@ const ROLE_LABEL = {
     harvester:  { label: "Harvester",  color: "#5a9e30" },
 };
 
-function ChombCard({ chomb }) {
+// ChombCard is memoized so it skips re-renders during TICK_PLOT ticks.
+// TICK_PLOT never mutates chombRoster, so `chomb` prop references are stable.
+// ChombRoster itself still re-renders on ticks (calls useFarm), but its
+// children are effectively skipped by memo.
+const ChombCard = memo(function ChombCard({ chomb }) {
     const busy = chomb.busy;
     const roleInfo = ROLE_LABEL[chomb.role] ?? { label: chomb.role, color: "#666" };
     const { selectedChombId, setSelectedChombId } = useSelection();
     const isSelected = selectedChombId === chomb.id;
 
-    function handleDragStart(e) {
+    const handleDragStart = useCallback((e) => {
         e.dataTransfer.setData("chombId", String(chomb.id));
         e.dataTransfer.effectAllowed = "move";
-        // Also select on drag-start so desktop drag still clears selection
         setSelectedChombId(chomb.id);
-    }
+    }, [chomb.id, setSelectedChombId]);
 
-    function handleClick() {
+    const handleClick = useCallback(() => {
         if (busy) return;
         setSelectedChombId(isSelected ? null : chomb.id);
-    }
+    }, [busy, isSelected, chomb.id, setSelectedChombId]);
 
     return (
         <div
@@ -54,7 +58,7 @@ function ChombCard({ chomb }) {
             </div>
         </div>
     );
-}
+});
 
 export default function ChombRoster({ horizontal = false }) {
     const { state } = useFarm();
