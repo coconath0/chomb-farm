@@ -62,9 +62,11 @@ Making the farm playable on any screen.
 | Tool | Purpose |
 |---|---|
 | [Vite](https://vitejs.dev/) | Dev server & bundler |
-| [React 19](https://react.dev/) | UI & state management (`useReducer`) |
+| [React 19](https://react.dev/) | UI & state management (`useReducer`, `useContext`) |
 | [CSS Modules](https://github.com/css-modules/css-modules) | Scoped component styles |
 | [HTML5 Drag & Drop API](https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API) | Drag Chombs onto farm plots |
+| [Firebase Hosting](https://firebase.google.com/docs/hosting) | Static site deployment |
+| [GitHub Actions](https://github.com/features/actions) | CI/CD — auto-deploy on push to `main` & preview on PRs |
 
 ---
 
